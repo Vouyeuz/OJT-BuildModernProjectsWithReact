@@ -73,6 +73,9 @@
            Question: 
            But why is it important to separate 
            async operation from normal redux flow?
+
+           Mas Fajar's answer:
+
            
         c. Think carefully about connecting components. When certain
            child component connected to store through reducers. Think
@@ -87,22 +90,22 @@
            Question: 
            Real-world cases that needs selector to be applied? <br>
   
- 29. Challenge: Adding a Redux Flow<br>
- 30. Solution: Adding a Redux Flow<br>
+✓ 29. Challenge: Adding a Redux Flow<br>
+✓ 30. Solution: Adding a Redux Flow<br>
  
 ### 4. DEALING WITH SIDE EFFECTS
- 31. Why Do You Need Redux Thunk?<br>
- 32. How Does Redux Thunk Work?<br>
- 33. Adding Redux Thunk to React<br>
- 34. Creating a Thunk<br>
- 35. The Todos API<br>
- 36. Async Thunks<br>
- 37. Adding Another Reducer<br>
- 38. Refactoring the Todos Reducer<br>
- 39. Using Thunks to Create Server Resources<br>
- 40. Using Thunks to Delete Server Resources<br>
- 41. Challenge: Using Thunks to Update Server Resou...<br>
- 42. Solution: Using Thunks to Update Server Resour...<br>
+✓ 31. Why Do You Need Redux Thunk?<br>
+✓ 32. How Does Redux Thunk Work?<br>
+✓ 33. Adding Redux Thunk to React<br>
+✓ 34. Creating a Thunk<br>
+✓ 35. The Todos API<br>
+✓ 36. Async Thunks<br>
+✓ 37. Adding Another Reducer<br>
+✓ 38. Refactoring the Todos Reducer<br>
+✓ 39. Using Thunks to Create Server Resources<br>
+✓ 40. Using Thunks to Delete Server Resources<br>
+✓ 41. Challenge: Using Thunks to Update Server Resou...<br>
+✓ 42. Solution: Using Thunks to Update Server Resour...<br>
  
 ### 5. SELECTORS
  43. Why Do You Need Selectors?<br>
@@ -127,3 +130,13 @@
 
 ### CONCLUSION
  58. Next Steps<br>
+
+
+# Think-tank
+## 1. container >< component
+      container: logic, async, bridging, sending props, or mothers component;
+      component: render, page, pure?, receiving props, or children component;
+
+      that is why most of the time mother component that contains logic, async operation, etc. Bcs sometimes centralize logic is more efficient rather than putting logic in every smallest children components. Easier to track, edit, and passing duplicated props to children components. Usally mother container contains complex logic that have to be pass to different children components, and many children components that almost identical with its siblings, too redundant if every children component have their own logic, identical at that.
+## 2. class-based component
+
