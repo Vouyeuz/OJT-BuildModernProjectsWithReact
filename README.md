@@ -26,8 +26,26 @@
 ✓ 18. Putting the App Together<br>
  
 ### 3. ADDING REDUX
-✓ 19. Why Do You Need Redux?<br>
-✓ 20. How Does Redux Work?<br>
+✓ 19. Why Do You Need Redux?
+
+         Redux needed for state management across components. Global/centralized-state but with strict rules. So no children components has direct access to Global-state.
+
+         Please note that redux only fit to manage synchronuz actions and logic inside application. When you need to communicated with server ie. make request API, it's recommended to not using redux. Use redux-thunk or redux-saga instead as redux libraries that specified to handle this side-effect logic.
+
+         For bigger projects, there is also a recommendation to use selector such as Reselect to differentiated multiply actions and its logic that based on same data or same child component. Use mother/selector component to bridging between children components and redux store.
+
+✓ 20. How Does Redux Work?
+
+         redux works depending on these 3 flux:
+            1. UI actions triggered
+               This "actions.js" component contains action triggered all across application, whether triggered by clicking button or change on input value. Every single actions that will cause some state change and cause re-rendering, all of them have to be done and collected inside this very component.
+            
+            2. reducer 
+               This "reducers.js" component contains specific logic and cumputation that proccessing certain actions that have been triggered priviously inside of actions component. Thus reducer bring these specific logic from specific action into store component to check and change--if possible-- global state and re-render updated state.
+
+            3. redux store
+               This "store.js" component contain 
+
 ✓ 21. Adding Redux to a React App<br>
 ✓ 22. Creating Redux Actions<br>
 ✓ 23. Creating Reducers<br>
