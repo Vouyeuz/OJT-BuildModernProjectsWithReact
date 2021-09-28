@@ -61,7 +61,9 @@
            far ahead whether that child component will be needed for
            another computation but with same data ie. separate 
            classification between incompleted against completed 
-           todos data. 
+           todos data.
+           Consider to add mother/container component
+           for bridging between redux and several children components. 
            #This side-effect will be handled by selector such as reselect
            
            Question: 
