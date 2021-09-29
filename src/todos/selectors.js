@@ -41,6 +41,7 @@ export const getIncompleteTodos = createSelector(
 // *Bcs its pure function, so no matter how many times this function being called inside our application, it will provide the same output. Anddd, for computation-power efficacy purpose, memorization method come in handy, just like caching.
 // *Only recomputed if any arguments changes.
 // *Down below is an example of a function with same result but computed for every calls:
+
 /*
 EXAMPLE:
 export const getIncompleteTodos = state => {
