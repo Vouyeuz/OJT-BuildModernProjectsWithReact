@@ -109,6 +109,13 @@
  
 ### 5. SELECTORS
  43. Why Do You Need Selectors?<br>
+
+      Main purpose why selectors is necessary is for our components become independent regardless of our structure-data in our redux-store. Only need one selector component and its oneliner adjustment for all of our component to connect to our redux-store.
+
+      Highly recommended for huge application that require to changes its data structure either in reducers or redux-store when data getting bigger when scaling up.
+      ### Summary
+      Change in data-structure in reducers or store, means no adjustment needed for every children components, only need to adjust selectors component.
+
  44. Creating Selectors<br>
  45. Combining Selectors with Reselect<br>
  46. More About Selectors<br>
@@ -140,3 +147,8 @@
       that is why most of the time mother component that contains logic, async operation, etc. Bcs sometimes centralize logic is more efficient rather than putting logic in every smallest children components. Easier to track, edit, and passing duplicated props to children components. Usally mother container contains complex logic that have to be pass to different children components, and many children components that almost identical with its siblings, too redundant if every children component have their own logic, identical at that.
 ## 2. class-based component
 
+
+# Question
+   1. Kenapa isLoading - thunk reducer actionnya cuma masukin type dari actions-nya, ga sekalian didestructure ikutin payload hasil dari actions-nya? 
+   Kenapa untuk payloadnya harus diikutin ke switch state punyanya todo reducers--sebelum digabung pas penerapan selector-- dan switch state isLoading cuma ngatasi type aja?
+   Bisa kah kalo dibikin sendiri sendiri yg lengkap ada type sama payload.
