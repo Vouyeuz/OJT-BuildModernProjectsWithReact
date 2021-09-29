@@ -6,7 +6,14 @@
 ✓ 02. What You Should Know<br>
 ✓ 03. Installing Necessary Software<br>
 ✓ 04. Exercise Files<br>
-✓ 05. What This Course Covers<br>
+✓ 05. What This Course Covers
+
+      SEPARATION OF CONCERNS IS THIS COURSE MAIN OBJECTIVE:
+         => Components for render component;
+         => Reducers for manage state;
+         => Thunks for side-effect logic;
+         => Selectors for bridging in short;
+         => Styled-components for css in js?; wkkww
  
 ### 1. PROJECT OVERVIEW
 ✓ 06. Why Use the React Ecosystem?<br>
@@ -110,11 +117,15 @@
 ### 5. SELECTORS
  43. Why Do You Need Selectors?<br>
 
+      Our children components no need to know how state data are formated in which structure inside our redux-store. And children components no need to contain any logic to change state data format inside of redux-store.
+
       Main purpose why selectors is necessary is for our components become independent regardless of our structure-data in our redux-store. Only need one selector component and its oneliner adjustment for all of our component to connect to our redux-store.
 
       Highly recommended for huge application that require to changes its data structure either in reducers or redux-store when data getting bigger when scaling up.
       ### Summary
-      Change in data-structure in reducers or store, means no adjustment needed for every children components, only need to adjust selectors component.
+      Change in data-structure in reducers or store, means no adjustment needed for every children components, only need to adjust selectors component. So our components almost can be completely freed of any logic, thus its sole purpose is render component.
+
+      In order to be completely free, styled-components needed.
 
  44. Creating Selectors<br>
  45. Combining Selectors with Reselect<br>
