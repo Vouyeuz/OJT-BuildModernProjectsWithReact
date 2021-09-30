@@ -9,12 +9,15 @@ const TodoItemContainer = styled.div`
   position: relative;
   box-shadow: 0 4px 8px grey;
 `;
+// !test this logic
+export const getBorderStyleForDate = (startingDate, currentDate) =>
+  startingDate > new Date(currentDate - 8640000 * 5)
+    ? "none"
+    : "5px solid hsl(360, 100%, 50%, .8)";
 
 const TodoItemContainerWithWarning = styled(TodoItemContainer)`
   border-bottom: ${(props) =>
-    new Date(props.createdAt) > new Date(Date.now() - 8640000 * 5)
-      ? "none"
-      : "5px solid hsl(360, 100%, 50%, .8)"};
+    getBorderStyleForDate(new Date(props.createdAt), Date.now())};
 `;
 
 const ButtonsContainer = styled.div`

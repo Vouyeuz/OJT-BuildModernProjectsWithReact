@@ -12,7 +12,6 @@ const ListWrapper = styled.div`
   margin: auto;
 `;
 
-
 const IncompletedTag = styled.h1`
   margin-top: 3rem;
   color: hsl(360, 100%, 50%);

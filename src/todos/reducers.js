@@ -32,14 +32,14 @@ import {
   so state structure will transform,
   from this:
     {
-      isLoading: true,
-      tod0s: [...],
+      isLoading: true, state.isLoading
+      tod0s: [...],  state.todos
     }
   into this:
     {
       data: {
-        isLoading: true,
-        t0dos: [...],
+        isLoading: true, state.data.isLoading
+        t0dos: [...], state.data.todos
       }
     }
 */
