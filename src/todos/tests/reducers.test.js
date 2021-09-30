@@ -3,7 +3,7 @@ import { todos } from "../reducers";
 
 describe("The todos reducer's task:", () => {
     it("Adds a new todo when CREATE_TODO action is received", () => {
-        const fakeTodo = { text: "Hello, I'm a test expert!", isCompleted: false };
+        const fakeTodo = { text: "Hello, I'm a test expert!", isCompleted: true };
         const fakeAction = {
             type: "CREATE_TODO",
             payload: {
