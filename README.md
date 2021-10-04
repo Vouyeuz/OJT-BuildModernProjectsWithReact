@@ -255,7 +255,12 @@
  52. Extending Styled-Components<br>
 
 ### 7. TESTING
- 53. Testing React Ecosystems<br>
+ 53. Testing React Ecosystems
+
+      define our desired logic into expected unit test, then connect it into our actual file using actual function inside testing file.
+
+      unit testing provide simpler standarization. 
+
  54. Testing Reducers<br>
  55. Testing Redux Thunks<br>
  56. Testing Selectors<br>
@@ -276,5 +281,5 @@
 
 # Question
    1. Kenapa isLoading - thunk reducer actionnya cuma masukin type dari actions-nya, ga sekalian didestructure ikutin payload hasil dari actions-nya? 
-   Kenapa untuk payloadnya harus diikutin ke switch state punyanya todo reducers--sebelum digabung pas penerapan selector-- dan switch state isLoading cuma ngatasi type aja?
+   Kenapa untuk payloadnya harus diikutin ke switch state punyanya todos reducers--sebelum digabung pas penerapan selector-- dan switch state isLoading cuma ngatasi type aja?
    Bisa kah kalo dibikin sendiri sendiri yg lengkap ada type sama payload.

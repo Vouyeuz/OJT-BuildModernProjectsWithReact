@@ -14,18 +14,20 @@ describe("The loadTodos thunk's task:", () => {
         const fakeTodos = [{ text: "1"}, { text: "2"}];
 
         // when dispatch fetch, it's only returning fakeTodos instead of doing real request to the server and consume API.
+        // fetch-like function
         fetchMock.get("http://localhost:8080/todos", fakeTodos);
 
         // define what our dispatch testing exactly want to do.
         const expectedFirstAction = { type: "LOAD_TODOS_IN_PROGRESS" };
         const expectedSecondAction = { 
-            type: "LOAD_TODOS_SUCCESS",
+            // !suppose to be LOAD_TODO_SUCCESS
+            type: "LOAD_TODOS_FAILURE",
             payload: {
                 todos: fakeTodos
             }
         };
 
-        // call our thunk.
+        // call our thunk-like dispatch.
         await loadTodos()(fakeDispatch);
 
         // do actual testing our fakeDispatch in correct order.
@@ -35,10 +37,11 @@ describe("The loadTodos thunk's task:", () => {
         expect(fakeDispatch.getCall(1).args[0]).to.deep.equal(expectedSecondAction);
 
 
-        // since no real request made, we need to reset fetch state into initial state.
+        // since no real request made, we need to reset fetch state to its initial state.
         fetchMock.reset();
          
     });
 });
 
 // !when testing thunk make sure of two things: ["dispatch correct actions at the right time", "make external request"];
+// ?dari semua function dan variable, mana yang connect ke file aslinya? 

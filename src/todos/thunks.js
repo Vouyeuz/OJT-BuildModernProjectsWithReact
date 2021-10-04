@@ -7,7 +7,7 @@ import {
   markTodoAsCompleted,
 } from "./actions";
 
-//! consume API
+//! consume API, get/read method
 export const loadTodos = () => async (dispatch, getState) => {
   try {
     dispatch(loadTodosInProgress());
@@ -21,7 +21,7 @@ export const loadTodos = () => async (dispatch, getState) => {
   }
 };
 
-//! post method
+//! post/create method
 export const addTodoRequest = (text) => async (dispatch) => {
   try {
     const body = JSON.stringify({ text });
@@ -52,7 +52,7 @@ export const removeTodoRequest = (id) => async (dispatch) => {
   }
 };
 
-// !update method
+// !post/update method
 export const markTodoAsCompletedRequest = (id) => async (dispatch) => {
   try {
     const response = await fetch(
