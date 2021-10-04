@@ -105,6 +105,10 @@
         propertyB: ...,
         propertyC: ...
       };
+      => children components might be able to manipulate props' value, but only to a minimum extend;
+
+      => State are managable, can be change in various way. But it seems the most appropriate, efficient way to handle state is through redux.
+      => without redux. state still can be manipulated using setState, and can be called or stored using this.state that is defined inside constructor(props).
       
 ✓ 15. Creating the TodoList Component<br>
 ✓ 16. Creating the TodoListItem Component<br>
@@ -257,7 +261,7 @@
 ### 7. TESTING
  53. Testing React Ecosystems
 
-      define our desired logic into expected unit test, then connect it into our actual file using actual function inside testing file.
+      define our desired logic into expected unit test, then connect it into our actual file using actual function inside testing file. add any fakeTodos or fake data, didn't affect test result.
 
       unit testing provide simpler standarization. 
 
