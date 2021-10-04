@@ -23,9 +23,57 @@
 ✓ 08. Building a React Project from Scratch<br>
 ✓ 09. The React Entry Point<br>
 ✓ 10. Supporting ES6<br>
-✓ 11. The Index.js File and App Components<br>
-✓ 12. Building and Serving with Webpack<br>
-✓ 13. Hot-reloading with React-hot-Loader<br>
+✓ 11. The Index.js File and App Components
+
+      <script src="../dist/bundle.js"><script>
+
+✓ 12. Building and Serving with Webpack
+      
+      //webpackConfigOldVersion
+      const path = require('path');
+      const webpack = require('webpack');
+      
+      module.exports = {
+        entry: './src/index.js',
+        mode: 'development',
+        module: {
+          rules: [
+            {
+              test: /\.(js|jsx)$/,
+              exclude: /(node_modules)/,
+              loader: 'babel-loader',
+              options: { presets: ["@babel/env"]}
+            },
+            {
+              test: /\.css$/,
+              use: ["style-loader", "css-loader"]
+            }
+          ]
+        },
+        resolve: { extensions: ['*', '.js', '.jsx'] },
+        output: {
+          path: path.resolve(__dirname, 'dist/'),
+          publicPath: '/dist/',
+          filename: 'bundle.js'
+        },
+        devServer: {
+          contentBase: path.join(__dirname, 'public/'),
+          port: 3000,
+          publicPath: 'http://localhost:3000/dist/',
+          hotOnly: true
+        },
+        plugins: [new webpack.HotModuleReplacementPlugin()]
+      };
+
+✓ 13. Hot-reloading with React-hot-Loader
+
+      App.js
+      import { hot } from 'react-hot-reloader';
+      
+      ...
+      
+      export default hot(module)(App);
+
 ✓ 14. Meet the Sample App<br>
 ✓ 15. Creating the TodoList Component<br>
 ✓ 16. Creating the TodoListItem Component<br>
@@ -106,7 +154,12 @@
 ✓ 33. Adding Redux Thunk to React<br>
 ✓ 34. Creating a Thunk<br>
 ✓ 35. The Todos API<br>
-✓ 36. Async Thunks<br>
+✓ 36. Async Thunks
+
+      thunk have 2 arguments(dispatch, getState)
+      dispatch: just like actions
+      getState: to get the current state of redux-store
+
 ✓ 37. Adding Another Reducer<br>
 ✓ 38. Refactoring the Todos Reducer<br>
 ✓ 39. Using Thunks to Create Server Resources<br>
