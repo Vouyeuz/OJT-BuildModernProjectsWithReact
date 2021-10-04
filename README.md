@@ -13,20 +13,42 @@
          => Reducers for manage state;
          => Thunks for side-effect logic;
          => Selectors for bridging in short;
-         => Styled-components for css in js?; wkkww
+         => Styled-components for css in js, passing props between style;
+         => Unit Testing using mocha and chai;
  
 ### 1. PROJECT OVERVIEW
-✓ 06. Why Use the React Ecosystem?<br>
-✓ 07. Meet the React Ecosystem Tools<br>
+✓ 06. Why Use the React Ecosystem?
+
+      => Learn how React works;
+      => Build react ecosystem from scrath without using create-react-app biolerplate;
+
+✓ 07. Meet the React Ecosystem Tools
  
 ### 2. CREATING YOUR BASIC PROJECT
 ✓ 08. Building a React Project from Scratch<br>
 ✓ 09. The React Entry Point<br>
-✓ 10. Supporting ES6<br>
-✓ 11. The Index.js File and App Components
 
+      index.html
       <script src="../dist/bundle.js"><script>
+      
+✓ 10. Supporting ES6
 
+      .babelrc
+      {
+        "presets": ["@babel/preset-env", "@babel/preset-react"],
+        //async runtime for thunk
+        "plugins": ["@babel/plugin-transform-runtime"]
+      }
+
+✓ 11. The Index.js File and App Components
+      
+      index.js
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+      import App from './App.js';
+      
+      ReactDOM.render(<App />, document.getElementById('root'));
+     
 ✓ 12. Building and Serving with Webpack
       
       //webpackConfigOldVersion
@@ -74,7 +96,16 @@
       
       export default hot(module)(App);
 
-✓ 14. Meet the Sample App<br>
+✓ 14. Meet the Sample App
+
+      note:
+      => Props are immutable, defined by parent component, passed to its children components, children only capable for read-only props using this.props; 
+      => Props can be set into default value using static defaultProps = {
+        propertyA: ...,
+        propertyB: ...,
+        propertyC: ...
+      };
+      
 ✓ 15. Creating the TodoList Component<br>
 ✓ 16. Creating the TodoListItem Component<br>
 ✓ 17. Creating the NewTodoForm Component<br>
@@ -99,11 +130,42 @@
                This "reducers.js" component contains specific logic and cumputation that proccessing certain actions that have been triggered priviously inside of actions component. Thus reducer bring these specific logic from specific action into store component to check and change--if possible-- global state and re-render updated state.
 
             3. redux store
-               This "store.js" component contain 
+               This "store.js" component contain rootReducer, in short global state of the application.
 
-✓ 21. Adding Redux to a React App<br>
-✓ 22. Creating Redux Actions<br>
-✓ 23. Creating Reducers<br>
+✓ 21. Adding Redux to a React App
+
+      => npm i redux react-redux;
+      => store.js
+         import {createStore, combineReducers} from 'redux';
+         
+         const reducers = {};
+         
+         const rootReducer = combineReducer(reducers);
+         
+         export const configureStore = createStore(rootReducer);
+         //then export this configureStore into App.js
+         
+      => App.js
+         import { Provider } from 'react-redux';
+         import { configureStore } from './store';
+         
+         //wrap <App /> inside Provider
+         ReactDOM.render(
+            <Provider store={configureStore}>
+              <App />
+            </Provider>,
+            docunebt.getElementById('root')
+         );
+
+✓ 22. Creating Redux Actions
+
+      => define and export any necessary actions and import them into reducers.js
+      => define and export any necessary actions and import them into children components and run them inside properties/methods of mapDispatchToProps function. Then pass those methods into that very component as a props to be process or to be passed to other components.
+      
+✓ 23. Creating Reducers
+
+      import
+
 ✓ 24. Connecting Components to the Store<br>
 ✓ 25. Running a React-Redux Application<br>
 ✓ 26. Persisting the Redux Store
