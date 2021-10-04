@@ -1,9 +1,5 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import styled from "styled-components";
-import { addTodoRequest } from "./thunks";
-import { getTodos } from "./selectors";
-
 
 const FormContainer = styled.div`
   border-radius: 8px;
@@ -34,40 +30,13 @@ const NewTodoButton = styled.button`
   background-color: #22ee22;
 `;
 
-
-const NewTodoForm = ({ todos, onCreatePressed }) => {
-  const [inputValue, setInputValue] = useState("");
-
+const NewTodoForm = ({ todos }) => {
   return (
     <FormContainer>
-      <NewTodoInput
-        type="text"
-        placeholder="What to do?"
-        value={inputValue}
-        onChange={e => setInputValue(e.target.value)}
-      />
-      <NewTodoButton
-        onClick={() => {
-          const isDuplicate = 
-            todos.some(todo => todo.text === inputValue);
-          if (!isDuplicate) {
-            onCreatePressed(inputValue);
-            setInputValue("");
-          }
-        }}
-      >
-        Create Todo
-      </NewTodoButton>
+      <NewTodoInput type="text" placeholder="What to do next?" />
+      <NewTodoButton>Create Todo</NewTodoButton>
     </FormContainer>
   );
 };
 
-const mapStateToProps = state => ({
-  todos: getTodos(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  onCreatePressed: text => dispatch(addTodoRequest(text)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(NewTodoForm);
+export default NewTodoForm;
