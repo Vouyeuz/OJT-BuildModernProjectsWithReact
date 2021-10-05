@@ -15,4 +15,19 @@ export const markTodoAsCompleted = (text) => ({
   type: MARK_TODO_AS_COMPLETED,
   payload: { text },
 });
-    
+
+export const LOAD_TODO_IN_PROGRESS = "LOAD_TODO_IN_PROGRESS";
+export const loadTodoInProgress = () => ({
+  type: LOAD_TODO_IN_PROGRESS,
+});
+
+export const LOAD_TODO_SUCCESS = "LOAD_TODO_SUCCESS";
+export const loadTodoSuccess = (todos) => ({
+  type: LOAD_TODO_SUCCESS,
+  payload: { todos },
+});
+
+export const LOAD_TODO_IN_FAILURE = "LOAD_TODO_IN_FAILURE";
+export const loadTodoFailure = () => ({
+  type: LOAD_TODO_IN_FAILURE,
+});
