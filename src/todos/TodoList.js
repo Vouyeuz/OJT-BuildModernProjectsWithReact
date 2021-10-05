@@ -22,12 +22,20 @@ const CompletedTag = styled.h1`
   color: hsl(120, 100%, 50%, .6);
 `;
 
+const LoadingText = styled.div`
+  font-size: 2rem;
+  color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const TodoList = ({ incompleteTodos, completedTodos, onRemovePressed, onCompletePressed, isLoading, startLoadingTodos }) => {
   useEffect(() => {
     startLoadingTodos()
   }, [])
 
-  const loadingMessage = <div>Loading todos... Run your server, please.</div>;
+  const loadingMessage = <LoadingText>Loading todos... Run your server, please.</LoadingText>;
   const content = (
     <ListWrapper>
       <NewTodoForm />
