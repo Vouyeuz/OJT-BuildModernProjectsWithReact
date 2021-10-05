@@ -12,7 +12,9 @@ const reducers = {
 
 const persistConfig = {
   key: "root",
+  //manage locale storage for browser
   storage,
+  //tells storage about how its work and how deep it should go
   stateReconciler: autoMergeLevel2,
 };
 

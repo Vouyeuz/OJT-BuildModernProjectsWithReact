@@ -35,18 +35,23 @@ const RemoveButton = styled(Button)`
   margin-left: 8px;
 `;
 
+// received props from its parent component, TodoList.js
+// tod0 refers to individual todos that was map methoded
+// onRemovePressed n onCompletedPressed refers to mapDispatchToProps' properties methods 
 const TodoListItem = ({ todo, onRemovePressed, onCompletedPressed }) => {
   return (
     <TodoItemContainer>
       <h3>{todo.text}</h3>
       <ButtonsContainer>
         {todo.isCompleted ? null : (
+            //dispatch function applied here
           <CompletedButton onClick={() => onCompletedPressed(todo.text)}>
             Mark as Completed
           </CompletedButton>
         )}
 
         <RemoveButton
+          //dispatch function applied here
           onClick={() => {
             onRemovePressed(todo.text);
           }}

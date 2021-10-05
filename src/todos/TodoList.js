@@ -18,6 +18,7 @@ const TodoList = ({ todos = [], onRemovePressed, onCompletedPressed }) => {
         <TodoListItem
           key={todo.text}
           todo={todo}
+          //defined dispatch's props to be passed for TodoListItem component.
           onRemovePressed={onRemovePressed}
           onCompletedPressed={onCompletedPressed}
         />
@@ -36,3 +37,8 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+
+
+// !note: 
+// export default connect(mapStateToProps)(TodoList);
+// export default connect(null, mapDispatchToProps)(TodoList);
