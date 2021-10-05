@@ -12,7 +12,7 @@ const ListWrapper = styled.div`
   margin: auto;
 `;
 
-const LoadingMessage = styled.div`
+const LoadingText = styled.div`
   font-size: 3rem;
   color: green;
   display: flex;
@@ -20,7 +20,7 @@ const LoadingMessage = styled.div`
   align-items: center;
 `;
 
-const WarningMessage = styled(LoadingMessage)`
+const WarningText = styled(LoadingText)`
   color: red;
 `;
 
@@ -38,10 +38,10 @@ const TodoList = ({
   }, []) //put empty array to prevent useEffect to recalling itself infinitely
 
   const loadingMessage = (
-    <LoadingMessage>
+    <LoadingText>
       Loading todos...Please wait,
-      <WarningMessage> or rather, turn on your server!</WarningMessage>
-    </LoadingMessage>
+      <WarningText> or rather, turn on your server!</WarningText>
+    </LoadingText>
   );
 
   const content = (
@@ -49,11 +49,11 @@ const TodoList = ({
       <NewTodoForm />
       {todos.map((todo) => (
         <TodoListItem
-          key={todo.text}
-          todo={todo}
-          //defined dispatch's props to be passed for TodoListItem component.
-          onRemovePressed={onRemovePressed}
-          onCompletedPressed={onCompletedPressed}
+        key={todo.text}
+        todo={todo}
+        //defined dispatch's props to be passed for TodoListItem component.
+        onRemovePressed={onRemovePressed}
+        onCompletedPressed={onCompletedPressed}
         />
       ))}
     </ListWrapper>
