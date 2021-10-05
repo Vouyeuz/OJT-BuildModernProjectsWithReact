@@ -791,6 +791,7 @@
       const mapStateToProps = (state) => ({
         // add access to isLoading props inside redux-store
         isLoading: state.isloading,
+        todos: state.todos
       });
 
       const mapDispatchToProps = (dispatch) => ({
@@ -800,7 +801,22 @@
 
 
 
-✓ 38. Refactoring the Todos Reducer<br>
+✓ 38. Refactoring the Todos Reducer
+
+      =>reducers.js
+      //add these code inside switch statement of todos reducer
+
+      // LOAD_TODOS_SUCCESS need special treatment bcs when we define this thunk function inside actions.js its payload is from todos in the server, not set locally like others as text. But soon this case will be normalize bcs any other actions will also be changed, every actions communicate with todos in the server, not refers to local text anymore when CRUD todo.
+      case LOAD_TODOS_SUCCESS: {
+        const { todos } = payload;
+        return todos;
+      }
+      // for now, these two case have the same behaviour as default case that is just return state
+      case LOAD_TODOS_IN_PROGRESS:
+      case LOAD_TODOS_FAILURE:
+      default:
+        return state;
+
 ✓ 39. Using Thunks to Create Server Resources<br>
 ✓ 40. Using Thunks to Delete Server Resources<br>
 ✓ 41. Challenge: Using Thunks to Update Server Resou...<br>
