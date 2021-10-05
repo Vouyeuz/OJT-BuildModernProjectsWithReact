@@ -599,9 +599,39 @@
 ✓ 30. Solution: Adding a Redux Flow<br>
  
 ### 4. DEALING WITH SIDE EFFECTS
-✓ 31. Why Do You Need Redux Thunk?<br>
-✓ 32. How Does Redux Thunk Work?<br>
-✓ 33. Adding Redux Thunk to React<br>
+✓ 31. Why Do You Need Redux Thunk?
+
+      for side-effect logic management that can't be handle perfectly using redux
+
+✓ 32. How Does Redux Thunk Work?
+
+      its responsibility just like actions file that defined what kind of fetching actions needed to trigger state-change through reducers.
+
+      in sort, still dependent to redux flux, but thunks.js file role is as actions.js file siblings that solely handle communication via server, or any async logic.
+
+      that's why redux-thunk also need development version of bable: @babel/plugin-transform-runtime in order to handle async behaviour.
+
+      => defined thunk actions through actions.js 
+      => export them into thunks.js to be proccess
+      => further proccess by its respective component depends on the result
+
+✓ 33. Adding Redux Thunk to React
+
+      => npm i redux-thunk redux-devtools-extension @babel/runtime
+      => npm i --save-dev @babel/plugin-transform-runtime
+
+      => .babelrc
+      "plugins": ["@babel/plugin-transform-runtime"]
+
+      => store.js
+      import { ..., ..., applyMiddleware } from "redux";
+      import thunk from "redux-thunk";
+      import { composeWithDevTools } from "redux-devtools-extension";
+
+      export const configureStore = () =>
+        //add args for thunk inside createStore function
+        createStore(persistedReducer, composeWithDevTools(applyMiddleware(thunk)));
+
 ✓ 34. Creating a Thunk<br>
 ✓ 35. The Todos API<br>
 ✓ 36. Async Thunks
@@ -610,7 +640,166 @@
       dispatch: just like actions
       getState: to get the current state of redux-store
 
-✓ 37. Adding Another Reducer<br>
+      => defined actions for our application, and hook it up to the server using thunks
+
+      => actions.js
+      export const LOAD_TODO_IN_PROGRESS = "LOAD_TODO_IN_PROGRESS";
+      export const loadTodoInProgress = () => ({
+        type: LOAD_TODO_IN_PROGRESS,
+      });
+
+      export const LOAD_TODO_SUCCESS = "LOAD_TODO_SUCCESS";
+      export const loadTodoSuccess = todos => ({
+        type: LOAD_TODO_SUCCESS,
+        payload: { todos }
+      });
+
+      export const LOAD_TODO_IN_FAILURE = "LOAD_TODO_IN_FAILURE";
+      export const loadTodoFailure = () => ({
+        type: LOAD_TODO_IN_FAILURE,
+      });
+
+
+      => thunks.js
+      import {
+        loadTodoInProgress,
+        loadTodoSuccess,
+        loadTodoFailure
+      } from "./actions";
+
+      // contains 2 arguments: dispatch and getState
+      // dispatch to dispatch other redux actions through thunk
+      // getState to get access to the current state of our redux-store
+      export const loadTodos = () => async (dispatch, getState) => {
+        //   try catch to handle in case our request failed
+        try {
+          dispatch(loadTodoInProgress());
+          const response = await fetch("http://localhost:8080/todos");
+          const todos = response.json();
+
+          // after we got response from server in form of todos, dispatch it inside our loadTodosSuccess that will pass somewhere that need to process this data, ie. reducers.js
+          dispatch(loadTodoSuccess(todos));
+        } catch (e) {
+          // if request failed means that this proccess will be handled by loadTodosFailure that return nothing from server, just whatever already exist inside initial todos
+          dispatch(loadTodoFailure());
+          dispatch(displayAlert(e));
+        }
+      };
+
+      export const displayAlert = (text) => () => {
+        alert(text);
+      };
+
+      //go to the reducer to process actions for thunks
+
+
+✓ 37. Adding Another Reducer
+
+      => reducers.js
+      import {
+        LOAD_TODO_IN_PROGRESS,
+        LOAD_TODO_SUCCESS,
+        LOAD_TODO_IN_FAILURE
+      } from "./actions";
+
+      // temporarily create new reducer isLoading to handle thunk actions that is regarding loading-proccess-only when requesting data from server.
+      // when it comes to what kind of result data after request, will be handled by todos reducer.
+      // later on in this project, this isLoading reducer will be merge into todos reducer when selector component implemented.
+
+      export const isLoading = (state = false, action) => {
+        // only destructure type property inside action arg, no payload needed
+        const { type } = action;
+
+        switch (type) {
+          case LOAD_TODO_IN_PROGRESS:
+            // activated loading action when requesting data from server
+            return true;
+            // no matter what promise we got, that means we no longer load anything, so turn this loading action off.
+          case LOAD_TODO_SUCCESS:
+          case LOAD_TODO_IN_FAILURE:
+            return false;
+          default:
+            // do nothing
+            return state;
+        }
+      };
+      //export isLoading reducer to store.js 
+
+
+      => store.js
+      import { todos, isLoading } from "./todos/reducers";
+
+      const reducers = {
+        todos,
+        isLoading,
+      };
+
+
+      => TodoList.js
+      import React, { useEffect } from "react";
+      // for dispatch purpose
+      import { loadTodos } from "./thunks";
+
+      const LoadingMessage = styled.div`
+        font-size: 3rem;
+        color: green;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      `;
+
+      const WarningMessage = styled(LoadingMessage)`
+        color: red;
+      `;
+
+
+      const TodoList = ({
+        isLoading,
+        startLoadingTodos
+      }) => {
+        // make TodoList start calling isLoading component, make it only called for once using useEffect, just like componentDidMount() in class-based component
+        useEffect(() => {
+          startLoadingTodos();  
+        }, []) //put empty array to prevent useEffect to recalling itself infinitely
+
+        const loadingMessage = (
+          <LoadingMessage>
+            Loading todos...Please wait,
+            <WarningMessage> or rather, turn on your server!</WarningMessage>
+          </LoadingMessage>
+        );
+
+        const content = (
+          <ListWrapper>
+            <NewTodoForm />
+            {todos.map((todo) => (
+              <TodoListItem
+                key={todo.text}
+                todo={todo}
+                //defined dispatch's props to be passed for TodoListItem component.
+                onRemovePressed={onRemovePressed}
+                onCompletedPressed={onCompletedPressed}
+              />
+            ))}
+          </ListWrapper>
+        );
+
+        // if isLoading true then return loading message, when done loading return todolist's content
+        return isLoading ? loadingMessage : content;
+      };
+
+      const mapStateToProps = (state) => ({
+        // add access to isLoading props inside redux-store
+        isLoading: state.isloading,
+      });
+
+      const mapDispatchToProps = (dispatch) => ({
+        // dispatch startLoadingTodos only when first time load application or when new request made?
+        startLoadingTodos: () => dispatch(loadTodos()),
+      });
+
+
+
 ✓ 38. Refactoring the Todos Reducer<br>
 ✓ 39. Using Thunks to Create Server Resources<br>
 ✓ 40. Using Thunks to Delete Server Resources<br>
