@@ -25,7 +25,11 @@
 ✓ 07. Meet the React Ecosystem Tools
  
 ### 2. CREATING YOUR BASIC PROJECT
-✓ 08. Building a React Project from Scratch<br>
+✓ 08. Building a React Project from Scratch
+        
+       => common practice is npm init -y for standard package.json setting.
+       => In our case, in order application running properly just like in the course, duplicate everything inside package.json and run in terminal npm i for download respective node_modules. Using exact same modules versioning, not the latest one. I'm noob, can't config. Npm installing no longer needed al the way to the end of the project.
+
 ✓ 09. The React Entry Point<br>
 
       index.html
@@ -36,7 +40,7 @@
       .babelrc
       {
         "presets": ["@babel/preset-env", "@babel/preset-react"],
-        //async runtime for thunk
+        //async runtime for thunk, added at a later time when installing thunk
         "plugins": ["@babel/plugin-transform-runtime"]
       }
 
@@ -48,7 +52,22 @@
       import App from './App.js';
       
       ReactDOM.render(<App />, document.getElementById('root'));
-     
+      
+      
+      App.js
+      snippet: rafce
+      import React from 'react';
+
+      const App = () => {
+        return (
+          <div>
+
+          </div>
+        )
+      }
+
+      export default App;
+
 ✓ 12. Building and Serving with Webpack
       
       //webpackConfigOldVersion
@@ -108,12 +127,160 @@
       => children components might be able to manipulate props' value, but only to a minimum extend;
 
       => State are managable, can be change in various way. But it seems the most appropriate, efficient way to handle state is through redux.
-      => without redux. state still can be manipulated using setState, and can be called or stored using this.state that is defined inside constructor(props).
+      => without redux. for class-based component, state still can be manipulated using setState, and can be called or stored using this.state that is defined inside constructor(props). As for functional component using react hook such as useState to manage state.
       
-✓ 15. Creating the TodoList Component<br>
-✓ 16. Creating the TodoListItem Component<br>
-✓ 17. Creating the NewTodoForm Component<br>
-✓ 18. Putting the App Together<br>
+✓ 15. Creating the TodoList Component
+
+      import React from "react";
+      import styled from "styled-components";
+      
+      const ListWrapper = styled.div`
+        max-width: 700px;
+        margin: auto;
+      `;
+
+      const TodoList = ({ todos = [] }) => {
+        return (
+          <ListWrapper>
+            <NewTodoForm />
+            {todos.map((todo) => (
+              <TodoListItem
+                key={todo.text}
+                todo={todo}
+              />
+            ))}
+          </ListWrapper>
+        );
+      };
+
+    
+      export default TodoList;
+
+
+✓ 16. Creating the TodoListItem Component
+
+      import React from "react";
+      import styled from "styled-components";
+
+      const TodoItemContainer = styled.div`
+        background: #fff;
+        border-radius: 8px;
+        margin-top: 8px;
+        padding: 16px;
+        position: relative;
+        box-shadow: 0 4px 8px grey;
+      `;
+
+      const ButtonsContainer = styled.div`
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+      `;
+
+      const Button = styled.button`
+        font-size: 16px;
+        padding: 8px;
+        border: none;
+        border-radius: 8px;
+        outline: none;
+        cursor: pointer;
+        display: inline-block;
+      `;
+
+      const CompletedButton = styled(Button)`
+        background-color: #22ee22;
+      `;
+
+      const RemoveButton = styled(Button)`
+        background-color: #ee2222;
+        margin-left: 8px;
+      `;
+
+      const TodoListItem = ({ todo }) => {
+        return (
+          <TodoItemContainer>
+            <h3>{todo.text}</h3>
+            <ButtonsContainer>
+              {todo.isCompleted ? null : (
+                <CompletedButton>
+                  Mark as Completed
+                </CompletedButton>
+              )}
+
+              <RemoveButton>
+                Remove
+              </RemoveButton>
+            </ButtonsContainer>
+          </TodoItemContainer>
+        );
+      };
+
+      export default TodoListItem;
+
+
+✓ 17. Creating the NewTodoForm Component
+
+      import React, { useState } from "react";
+      import styled from "styled-components";
+    
+      const FormContainer = styled.div`
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        box-shadow: 0 4px 8px grey;
+      `;
+
+      const NewTodoInput = styled.input`
+        font-size: 16px;
+        padding: 8px;
+        border: none;
+        border-bottom: 2px solid #ddd;
+        border-radius: 8px;
+        width: 70%;
+        outline: none;
+      `;
+
+      const NewTodoButton = styled.button`
+        font-size: 16px;
+        padding: 8px;
+        border: none;
+        border-radius: 8px;
+        outline: none;
+        cursor: pointer;
+        margin-left: 8px;
+        width: 20%;
+        background-color: #22ee22;
+      `;
+
+      const NewTodoForm = () => {
+        const [inputValue, setInputValue] = useState("");
+        console.log(inputValue);
+
+        return (
+          <FormContainer>
+            <NewTodoInput
+              type="text"
+              placeholder="What to do next?"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <NewTodoButton>
+              Create Todo
+            </NewTodoButton>
+          </FormContainer>
+        );
+      };
+
+      export default NewTodoForm;
+
+
+✓ 18. Putting the App Together
+
+      TodoList.js
+      import NewTodoForm from "./NewTodoForm";
+      import TodoListItem from "./TodoListItem";
+        
+
  
 ### 3. ADDING REDUX
 ✓ 19. Why Do You Need Redux?
@@ -138,7 +305,7 @@
 
 ✓ 21. Adding Redux to a React App
 
-      => npm i redux react-redux;
+      => npm i redux react-redux (no need);
       => store.js
          import {createStore, combineReducers} from 'redux';
          
@@ -149,6 +316,7 @@
          export const configureStore = createStore(rootReducer);
          //then export this configureStore into App.js
          
+         /////////////////////////////////////////////////////
       => App.js
          import { Provider } from 'react-redux';
          import { configureStore } from './store';
@@ -158,26 +326,247 @@
             <Provider store={configureStore}>
               <App />
             </Provider>,
-            docunebt.getElementById('root')
+            document.getElementById('root')
          );
 
 ✓ 22. Creating Redux Actions
 
+      => actions.js
       => define and export any necessary actions and import them into reducers.js
       => define and export any necessary actions and import them into children components and run them inside properties/methods of mapDispatchToProps function. Then pass those methods into that very component as a props to be process or to be passed to other components.
       
+      //export to reducers for defining state(structure of data object) according to action(type n payload) inside reducer's switch statement
+      export const CREATE_TODO = "CREATE_TODO";
+      
+      //export to components for execution
+      export const createTodo = (text) => ({
+        type: CREATE_TODO,
+        payload: { text },
+      });
+
+      export const REMOVE_TODO = "REMOVE_TODO";
+      export const removeTodo = (text) => ({
+        type: REMOVE_TODO,
+        payload: { text },
+      });
+
+      export const MARK_TODO_AS_COMPLETED = "MARK_TODO_AS_COMPLETED";
+      export const markTodoAsCompleted = (text) => ({
+        type: MARK_TODO_AS_COMPLETED,
+        payload: { text },
+      });
+
+      
 ✓ 23. Creating Reducers
 
-      import
+      => reducers.js
+      import { CREATE_TODO, REMOVE_TODO, MARK_TODO_AS_COMPLETED } from "./actions";
 
-✓ 24. Connecting Components to the Store<br>
-✓ 25. Running a React-Redux Application<br>
+      //export this todos reducer into store.js
+      export const todos = (state = [], action) => {
+        const { type, payload } = action;
+
+        //each switch case manage how state change depends on specific actions.
+        switch (type) {
+          case CREATE_TODO: {
+            const { text } = payload;
+            const newTodo = {
+              text,
+              isCompleted: false,
+            };
+            return state.concat(newTodo);
+          }
+          case REMOVE_TODO: {
+            const { text } = payload;
+            return state.filter((todo) => todo.text !== text);
+          }
+          case MARK_TODO_AS_COMPLETED: {
+            const { text } = payload;
+            return state.map(todo => {
+                if(todo.text === text) {
+                  return {...todo, isCompleted: true};
+                }
+                return todo;
+            })
+          }
+          default:
+            return state;
+        }
+      };
+      
+      ////////////////////////////////////////////////////////
+      => store.js
+      import { todos } from "./todos/reducers";
+
+      //container for reducers all across the application
+      const reducers = {
+        todos,
+      };
+
+
+✓ 24. Connecting Components to the Store
+
+      => NewTodoForm.js
+      //connect component to store.js
+      import { connect } from "react-redux";
+      // define logic for dispatch function
+      import { createTodo } from "./actions";
+      
+      const NewTodoForm = ({ todos, onCreatePressed }) => {
+      
+       <NewTodoButton
+        onClick={() => {
+          // thanks for access granted by mapStateToProps, capable of searching for duplicate todos inside redux-store real-time
+          const isDuplicateText = todos.some(
+            (todo) => todo.text === inputValue
+          );
+          if (!isDuplicateText) {
+            // when no duplicate data found, allowed to dispatch this mapDispatchToProps' properties action to change and update current state inside redux-store.
+            // updated state after triggered by this dispatch, can be use by other components ie. TodoList and TodoListItem components for rendering purpose.
+            onCreatePressed(inputValue);
+            // reset value
+            setInputValue("");
+          }
+        }}
+       >
+        Create Todo
+       </NewTodoButton>
+      
+      };
+      
+      //mapStateToProps function gave access to component for accessing state inside redux-store.
+      //state argument contain every state of the application.
+      //in this case NewTodoForm.js need access to todos reducers inside our redux-store.
+      const mapStateToProps = (state) => ({
+        todos: state.todos,
+      });
+
+      //trigger change inside redux-store using this dispatch argument.
+      // onCreatePressed logic is defined by createTodo function that imported from actions.js file
+      const mapDispatchToProps = (dispatch) => ({
+        onCreatePressed: (text) => dispatch(createTodo(text)),
+      });
+
+      export default connect(mapStateToProps, mapDispatchToProps)(NewTodoForm);
+    
+
+✓ 25. Running a React-Redux Application
+
+      => TodoList.js
+      import { connect } from "react-redux";
+      import { removeTodo, markTodoAsCompleted } from "./actions";
+
+      const TodoList = ({ todos = [], onRemovePressed, onCompletedPressed }) => {
+        return (
+          <ListWrapper>
+            <NewTodoForm />
+            {todos.map((todo) => (
+              <TodoListItem
+                key={todo.text}
+                todo={todo}
+                
+                //defined dispatch's props to be passed for TodoListItem component.
+                onRemovePressed={onRemovePressed}
+                onCompletedPressed={onCompletedPressed}
+              />
+            ))}
+          </ListWrapper>
+        );
+      };
+
+      const mapStateToProps = (state) => ({
+        todos: state.todos,
+      });
+
+      const mapDispatchToProps = (dispatch) => ({
+        onRemovePressed: text => dispatch(removeTodo(text)),
+        onCompletedPressed: text => dispatch(markTodoAsCompleted(text)),
+      });
+
+      export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+      
+      // !note: 
+      // export default connect(mapStateToProps)(TodoList);
+      // export default connect(null, mapDispatchToProps)(TodoList);
+      
+      
+      => TodoListItem.js
+      //logic that defined inside TodoList.js, applied here through actions
+
+      // received props from its parent component, TodoList.js
+      // tod0 refers to individual todos that was map methoded
+      // onRemovePressed n onCompletedPressed refers to mapDispatchToProps' properties methods 
+      const TodoListItem = ({ todo, onRemovePressed, onCompletedPressed }) => {
+        return (
+          <TodoItemContainer>
+            <h3>{todo.text}</h3>
+            <ButtonsContainer>
+              //dispatch function applied here
+              {todo.isCompleted ? null : (
+                <CompletedButton onClick={() => onCompletedPressed(todo.text)}>
+                  Mark as Completed
+                </CompletedButton>
+              )}
+
+              <RemoveButton
+                //dispatch function applied here
+                onClick={() => {
+                  onRemovePressed(todo.text);
+                }}
+              >
+                Remove
+              </RemoveButton>
+            </ButtonsContainer>
+          </TodoItemContainer>
+        );
+      };
+
+      export default TodoListItem;
+
 ✓ 26. Persisting the Redux Store
 
         a. npm i redux-persist => store.js => 
               wrap <App /> using <PersistGate> inside index.js.
         b. PermaCrash debugging: 
               F12 => Application => LocalStorage => clear persist:root.
+              
+       => store.js
+        import { persistReducer } from "redux-persist";
+        import storage from "redux-persist/lib/storage";
+        import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
+      
+
+        const persistConfig = {
+          key: "root",
+          //manage locale storage for browser
+          storage,
+          //tells storage about how its work and how deep it should go
+          stateReconciler: autoMergeLevel2,
+        };
+
+        const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+        export const configureStore = () =>
+          createStore(persistedReducer);
+          
+          
+        => index.js
+        import { persistStore } from "redux-persist";
+        import { PersistGate } from "redux-persist/lib/integration/react";
+        
+        const store = configureStore();
+        const persistor = persistStore(store);
+
+        ReactDOM.render(
+          <Provider store={store}>
+            <PersistGate persistor={persistor}>
+              <App />
+            </PersistGate>
+          </Provider>,
+          document.getElementById("root")
+        );
+        
+       
 ✓ 27. Redux DevTools:
 
         web browsers extension or npm packages.
@@ -194,9 +583,6 @@
            Question: 
            But why is it important to separate 
            async operation from normal redux flow?
-
-           Mas Fajar's answer:
-
            
         c. Think carefully about connecting components. When certain
            child component connected to store through reducers. Think
@@ -208,9 +594,7 @@
            for bridging between redux and several children components. 
            #This side-effect will be handled by selector such as reselect
            
-           Question: 
-           Real-world cases that needs selector to be applied? <br>
-  
+            
 ✓ 29. Challenge: Adding a Redux Flow<br>
 ✓ 30. Solution: Adding a Redux Flow<br>
  
