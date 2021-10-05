@@ -13,15 +13,11 @@ const ListWrapper = styled.div`
 `;
 
 const LoadingText = styled.div`
-  font-size: 3rem;
-  color: green;
+  font-size: 2rem;
+  color: red;
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const WarningText = styled(LoadingText)`
-  color: red;
 `;
 
 
@@ -34,20 +30,19 @@ const TodoList = ({
 }) => {
   // make TodoList start calling isLoading component, make it only called for once using useEffect, just like componentDidMount() in class-based component
   useEffect(() => {
-    startLoadingTodos();  
+    startLoadingTodos()
   }, []) //put empty array to prevent useEffect to recalling itself infinitely
 
-  const loadingMessage = (
+  const loadingMessage = 
     <LoadingText>
-      Loading todos...Please wait,
-      <WarningText> or rather, turn on your server!</WarningText>
+      Loading todos...Please wait, or rather, turn on your server!
     </LoadingText>
-  );
+  ;
 
   const content = (
     <ListWrapper>
       <NewTodoForm />
-      {todos.map((todo) => (
+      {todos.map((todo) => 
         <TodoListItem
         key={todo.text}
         todo={todo}
@@ -55,7 +50,7 @@ const TodoList = ({
         onRemovePressed={onRemovePressed}
         onCompletedPressed={onCompletedPressed}
         />
-      ))}
+      )}
     </ListWrapper>
   );
 
@@ -65,7 +60,7 @@ const TodoList = ({
 
 const mapStateToProps = (state) => ({
   // add access to isLoading props inside redux-store
-  isLoading: state.isloading,
+  isLoading: state.isLoading,
   todos: state.todos,
 });
 

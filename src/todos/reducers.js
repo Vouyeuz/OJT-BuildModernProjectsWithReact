@@ -2,9 +2,9 @@ import {
   CREATE_TODO,
   REMOVE_TODO,
   MARK_TODO_AS_COMPLETED,
-  LOAD_TODO_IN_PROGRESS,
-  LOAD_TODO_SUCCESS,
-  LOAD_TODO_IN_FAILURE
+  LOAD_TODOS_IN_PROGRESS,
+  LOAD_TODOS_SUCCESS,
+  LOAD_TODOS_FAILURE
 } from "./actions";
 
 // temporarily create new reducer isLoading to handle thunk actions that is regarding loading-proccess-only when requesting data from server.
@@ -15,12 +15,12 @@ export const isLoading = (state = false, action) => {
   const { type } = action;
 
   switch (type) {
-    case LOAD_TODO_IN_PROGRESS:
+    case LOAD_TODOS_IN_PROGRESS:
       // activated loading action when requesting data from server
       return true;
       // no matter what promise we got, that means we no longer load anything, so turn this loading action off.
-    case LOAD_TODO_SUCCESS:
-    case LOAD_TODO_IN_FAILURE:
+    case LOAD_TODOS_SUCCESS:
+    case LOAD_TODOS_FAILURE:
       return false;
     default:
       // do nothing
@@ -55,6 +55,14 @@ export const todos = (state = [], action) => {
         return todo;
       });
     }
+    // LOAD_TODOS_SUCCESS need special treatment bcs when we define this thunk function inside actions.js its payload is from todos in the server, not set locally like others as text. But soon this case will be normalize bcs any other actions will also be changed, every actions communicate with todos in the server, not refers to local text anymore when CRUD todo.
+    case LOAD_TODOS_SUCCESS: {
+      const { todos } = payload;
+      return todos;
+    }
+    // for now, these two case have the same behaviour as default case that is just return state
+    case LOAD_TODOS_IN_PROGRESS:
+    case LOAD_TODOS_FAILURE:
     default:
       return state;
   }
