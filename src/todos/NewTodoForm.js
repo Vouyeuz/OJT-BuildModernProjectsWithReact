@@ -40,7 +40,6 @@ const NewTodoButton = styled.button`
 // received todos props and onCreatePressed dispatch method from mapStateToProps and mapDispatchToProps
 const NewTodoForm = ({ todos, onCreatePressed }) => {
   const [inputValue, setInputValue] = useState("");
-  console.log(inputValue);
 
   return (
     <FormContainer>
@@ -49,22 +48,23 @@ const NewTodoForm = ({ todos, onCreatePressed }) => {
         placeholder="What to do next?"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-      />
+        />
       <NewTodoButton
         onClick={() => {
           // thanks for access granted by mapStateToProps, capable of searching for duplicate todos inside redux-store real-time
           const isDuplicateText = todos.some(
             (todo) => todo.text === inputValue
-          );
-          if (!isDuplicateText) {
-            // when no duplicate data found, allowed to dispatch this mapDispatchToProps' properties action to change and update current state inside redux-store.
-            // updated state after triggered by this dispatch, can be use by other components ie. TodoList and TodoListItem components for rendering purpose.
-            onCreatePressed(inputValue);
-            // reset value
-            setInputValue("");
-          }
-        }}
-      >
+            );
+            const isEmpty = (inputValue === '');
+            if (!isDuplicateText && !isEmpty) {
+              // when no duplicate data found, allowed to dispatch this mapDispatchToProps' properties action to change and update current state inside redux-store.
+              // updated state after triggered by this dispatch, can be use by other components ie. TodoList and TodoListItem components for rendering purpose.
+              onCreatePressed(inputValue);
+              // reset value
+              setInputValue("");
+            }
+          }}
+          >
         Create Todo
       </NewTodoButton>
     </FormContainer>
