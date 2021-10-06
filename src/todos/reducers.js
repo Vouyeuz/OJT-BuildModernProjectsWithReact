@@ -35,22 +35,23 @@ export const todos = (state = [], action) => {
 
   switch (type) {
     case CREATE_TODO: {
-      const { text } = payload;
-      const newTodo = {
-        text,
-        isCompleted: false,
-      };
-      return state.concat(newTodo);
+      // our payload already changes into todo, no longer text
+      // our server automatically define our data state structure, we just need no return it, no need newTodo for defining our data state structure. feels weird calling it data state structure...hmm
+      const { todo } = payload;
+      return state.concat(todo);
     }
     case REMOVE_TODO: {
-      const { text } = payload;
-      return state.filter((todo) => todo.text !== text);
+      const { todo: removedTodo } = payload;
+      return state.filter((todo) => todo.id !== removedTodo.id);
     }
     case MARK_TODO_AS_COMPLETED: {
-      const { text } = payload;
+      const { todo: updatedTodo } = payload;
       return state.map((todo) => {
-        if (todo.text === text) {
-          return { ...todo, isCompleted: true };
+        if (todo.id === updatedTodo.id) {
+          // return { ...todo, isCompleted: true };
+          //? why replace it with just updatedTodo?
+          return updatedTodo;
+
         }
         return todo;
       });

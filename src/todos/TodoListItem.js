@@ -45,7 +45,8 @@ const TodoListItem = ({ todo, onRemovePressed, onCompletedPressed }) => {
       <ButtonsContainer>
         {todo.isCompleted ? null : (
             //dispatch function applied here
-          <CompletedButton onClick={() => onCompletedPressed(todo.text)}>
+            //replace todo.text with todo.id
+          <CompletedButton onClick={() => onCompletedPressed(todo.id)}>
             Mark as Completed
           </CompletedButton>
         )}
@@ -53,7 +54,8 @@ const TodoListItem = ({ todo, onRemovePressed, onCompletedPressed }) => {
         <RemoveButton
           //dispatch function applied here
           onClick={() => {
-            onRemovePressed(todo.text);
+            //replace todo.text with todo.id
+            onRemovePressed(todo.id);
           }}
         >
           Remove

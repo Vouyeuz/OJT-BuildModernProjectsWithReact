@@ -4,8 +4,9 @@ import { connect } from "react-redux";
 import NewTodoForm from "./NewTodoForm";
 import TodoListItem from "./TodoListItem";
 // for dispatch purpose
-import { loadTodos } from "./thunks";
-import { removeTodo, markTodoAsCompleted } from "./actions";
+import { loadTodos, removeTodoRequest, markTodoAsCompletedRequest } from "./thunks";
+// no longer needed
+// import { removeTodo, markTodoAsCompleted } from "./actions";
 
 const ListWrapper = styled.div`
   max-width: 700px;
@@ -44,7 +45,8 @@ const TodoList = ({
       <NewTodoForm />
       {todos.map((todo) => 
         <TodoListItem
-        key={todo.text}
+        // replace todo.text with todo.id, even though not neccessary for this case, bcs todo.text already unique bcs no duplicate text
+        key={todo.id}
         todo={todo}
         //defined dispatch's props to be passed for TodoListItem component.
         onRemovePressed={onRemovePressed}
@@ -67,8 +69,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   // dispatch startLoadingTodos only when first time load application or when new request made?
   startLoadingTodos: () => dispatch(loadTodos()),
-  onRemovePressed: (text) => dispatch(removeTodo(text)),
-  onCompletedPressed: (text) => dispatch(markTodoAsCompleted(text)),
+  // replace text argument with id
+  onRemovePressed: (id) => dispatch(removeTodoRequest(id)),
+  onCompletedPressed: (id) => dispatch(markTodoAsCompletedRequest(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);

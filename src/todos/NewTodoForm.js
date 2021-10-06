@@ -3,7 +3,9 @@ import styled from "styled-components";
 // connect component to redux-store
 import { connect } from "react-redux";
 // define logic for dispatch function
-import { createTodo } from "./actions";
+// import { createTodo } from "./actions";
+// no longer need createTodo from action, replace it with addTodoRequest from thunks. bcs createTodo function from action already used inside addTodoRequest function.
+import { addTodoRequest } from "./thunks";
 
 const FormContainer = styled.div`
   border-radius: 8px;
@@ -79,7 +81,7 @@ const mapStateToProps = (state) => ({
 //trigger change inside redux-store using this dispatch argument.
 // onCreatePressed logic is defined by createTodo function that imported from actions.js file
 const mapDispatchToProps = (dispatch) => ({
-  onCreatePressed: (text) => dispatch(createTodo(text)),
+  onCreatePressed: (text) => dispatch(addTodoRequest(text)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewTodoForm);
