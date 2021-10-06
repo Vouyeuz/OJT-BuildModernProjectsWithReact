@@ -706,6 +706,7 @@
       // when it comes to what kind of result data after request, will be handled by todos reducer.
       // later on in this project, this isLoading reducer will be merge into todos reducer when selector component implemented.
 
+      // !get request - READ of CRUD
       export const isLoading = (state = false, action) => {
         // only destructure type property inside action arg, no payload needed
         const { type } = action;
@@ -791,6 +792,7 @@
       const mapStateToProps = (state) => ({
         // add access to isLoading props inside redux-store
         isLoading: state.isloading,
+        todos: state.todos
       });
 
       const mapDispatchToProps = (dispatch) => ({
@@ -800,8 +802,192 @@
 
 
 
-✓ 38. Refactoring the Todos Reducer<br>
-✓ 39. Using Thunks to Create Server Resources<br>
+✓ 38. Refactoring the Todos Reducer
+
+      =>reducers.js
+      //add these code inside switch statement of todos reducer
+
+      // LOAD_TODOS_SUCCESS need special treatment bcs when we define this thunk function inside actions.js its payload is from todos in the server, not set locally like others as text. But soon this case will be normalize bcs any other actions will also be changed, every actions communicate with todos in the server, not refers to local text anymore when CRUD todo.
+      case LOAD_TODOS_SUCCESS: {
+        const { todos } = payload;
+        return todos;
+      }
+      // for now, these two case have the same behaviour as default case that is just return state
+      case LOAD_TODOS_IN_PROGRESS:
+      case LOAD_TODOS_FAILURE:
+      default:
+        return state;
+
+✓ 39. Using Thunks to Create Server Resources
+
+      =>thunks.js
+      import {
+        createTodo,
+        removeTodo,
+        markTodoAsCompleted
+      } from "./actions";
+    
+
+      // inputValue-text as props and process using async dispatch function
+      // !post request - CREATE of CRUD
+      export const addTodoRequest = text => async dispatch => {
+        try {
+          // create body for response message, send this body to server, wrap it using this standard method of posting new data to server. transform into json file using JSON.stringify()
+          const body = JSON.stringify({text});
+          const response = await fetch('http://localhost:8080/todos', {
+            // common practice when create something using rest api
+            headers: {
+              'Content-type': 'application/json'
+            },
+            method: 'post',
+            body
+          });
+          // save response inside todo variable, either success or failed create new data
+          const todo = await response.json();
+          // dispatch this todo into reducers to be process. we will define what logic should be done to our redux-store regarding this thunk-action
+          dispatch(createTodo(todo));
+        } catch (e) {
+          dispatch(displayAlert(e));
+        }
+      };
+
+      // !delete request - DELETE of CRUD
+      export const removeTodoRequest = id => async dispatch => {
+        try {
+          // by server default, every single todo automatically has their own id, use their id as unique identifier.
+          const response = await fetch(`http://localhost:8080/todos/${id}`, {
+            method: 'delete'
+          });
+          const todo = response.json();
+          dispatch(removeTodo(todo));
+        } catch (e) {
+          dispatch(displayAlert(e));
+        }
+      };
+
+      // !post request - UPDATE of CRUD
+      export const markTodoAsCompletedRequest = id => async dispatch => {
+        try {
+          // similar to create method using post, but bcs of its unique id, restful api already smart enough to know and differentiate what we want to update only this specific data inside database.
+          const response = await fetch(`http://localhost:8080/todos/${id}`, {
+            method: 'post'
+          })
+          const todo = response.json();
+          dispatch(markTodoAsCompleted(todo));
+        } catch (e) {
+          dispatch(displayAlert(e));
+        }
+      };
+
+      //next is change our actions.js, reducers.js data structure, and NewFormTodo.js, and TodoList.js, and TodoListItem.js to match with our flow to communicate with the server.
+
+      => actions.js
+      // change text into todo, bcs our processing flow no longer local to our application, but through server.
+      export const CREATE_TODO = "CREATE_TODO";
+      export const createTodo = (todo) => ({
+        type: CREATE_TODO,
+        payload: { todo },
+      });
+
+      export const REMOVE_TODO = "REMOVE_TODO";
+      export const removeTodo = (todo) => ({
+        type: REMOVE_TODO,
+        payload: { todo },
+      });
+
+      export const MARK_TODO_AS_COMPLETED = "MARK_TODO_AS_COMPLETED";
+      export const markTodoAsCompleted = (todo) => ({
+        type: MARK_TODO_AS_COMPLETED,
+        payload: { todo },
+      });
+
+
+      => reducers.js
+      export const todos = (state = [], action) => {
+      const { type, payload } = action;
+
+      switch (type) {
+        case CREATE_TODO: {
+          // our payload already changes into todo, no longer text
+          // our server automatically define our data state structure, we just need no return it, no need newTodo for defining our data state structure. feels weird calling it data state structure...hmm
+          const { todo } = payload;
+          return state.concat(todo);
+        }
+        case REMOVE_TODO: {
+          const { todo: removedTodo } = payload;
+          return state.filter((todo) => todo.id !== removedTodo.id);
+        }
+        case MARK_TODO_AS_COMPLETED: {
+          const { todo: updatedTodo } = payload;
+          return state.map((todo) => {
+            if (todo.id === updatedTodo.id) {
+              // return { ...todo, isCompleted: true };
+              //? why replace it with just updatedTodo?
+              return updatedTodo;
+
+            }
+            return todo;
+          });
+        }
+      };
+
+      => NewTodoForm.js
+      // define logic for dispatch function
+      // import { createTodo } from "./actions";
+      // no longer need createTodo from action, replace it with addTodoRequest from thunks. bcs createTodo function from action already used inside addTodoRequest function.
+      import { addTodoRequest } from "./thunks";
+
+
+      //replace createTodo with addTodoRequest.
+      const mapDispatchToProps = (dispatch) => ({
+        onCreatePressed: (text) => dispatch(addTodoRequest(text)),
+      });
+
+
+      => TodoList.js
+      // for dispatch purpose
+      import { loadTodos, removeTodoRequest, markTodoAsCompletedRequest } from "./thunks";
+      // no longer needed
+      // import { removeTodo, markTodoAsCompleted } from "./actions";
+
+
+      // replace todo.text with todo.id, even though not neccessary for this case, bcs todo.text already unique bcs no duplicate text
+        key={todo.id}
+
+      const mapDispatchToProps = (dispatch) => ({
+        // dispatch startLoadingTodos only when first time load application or when new request made?
+        startLoadingTodos: () => dispatch(loadTodos()),
+        // replace text argument with id
+        onRemovePressed: (id) => dispatch(removeTodoRequest(id)),
+        onCompletedPressed: (id) => dispatch(markTodoAsCompletedRequest(id)),
+      });
+
+      => TodoListItem.js
+      <TodoItemContainer>
+        <h3>{todo.text}</h3>
+        <ButtonsContainer>
+          {todo.isCompleted ? null : (
+              //dispatch function applied here
+              //replace todo.text with todo.id
+            <CompletedButton onClick={() => onCompletedPressed(todo.id)}>
+              Mark as Completed
+            </CompletedButton>
+          )}
+
+          <RemoveButton
+            //dispatch function applied here
+            onClick={() => {
+              //replace todo.text with todo.id
+              onRemovePressed(todo.id);
+            }}
+          >
+            Remove
+          </RemoveButton>
+        </ButtonsContainer>
+      </TodoItemContainer>
+
+      Gratz!!! Works properly.
+
 ✓ 40. Using Thunks to Delete Server Resources<br>
 ✓ 41. Challenge: Using Thunks to Update Server Resou...<br>
 ✓ 42. Solution: Using Thunks to Update Server Resour...<br>
