@@ -1040,7 +1040,7 @@
       nicely done.
  
 ### 5. SELECTORS
- 43. Why Do You Need Selectors?<br>
+ ✓ 43. Why Do You Need Selectors?<br>
 
       Our children components no need to know how state data are formated in which structure inside our redux-store. And children components' mapStateToProps's properties no need to contain any logic to change state data format inside of redux-store such as filtering, combining, or any other transformation. Just need to call higher-order function that already defined inside selectors.js file, ie. getIncompleteTodos and getCompletedTodos pure functions.
 
@@ -1052,7 +1052,7 @@
 
       In order to be completely free, styled-components needed.
 
- 44. Creating Selectors
+ ✓ 44. Creating Selectors
  
       => selectors.js
       // these are lower-order function selectors. Their task's is solely to bridging between render components and redux-store. Any changes regarding state data or logic, no further adjustment inside mapStateToProps of our render components, just adjust these lower-order function selectors.
@@ -1073,6 +1073,7 @@
         todos: getTodos(state),//replace with selectors lower-order function
       });
 
+
       //////////////////////////////////////////////////
       => NewTodoForm.js
       import { getTodos } from "./selectors"; //replacement for mapStateToProps' property's value.
@@ -1083,8 +1084,8 @@
       });
 
       //////////////////////////////////////////////////////
-
-      NOW IT'S TIME TO INCORPORATE isLoading REDUCER INSIDE OF todos REDUCER. BCS THIS WAY IS HOW EVERYTHING SHOULD NORMALLY DONE. IN REAL APPLICATION, THERE HAVE TO BE MORE THAN 1 REDUCER SUCH AS todos, users, documents, videos, pictures, ETC. AND NORMALLY EVERY REDUCER THAT CONNECT TO SERVER NEEDS isLoading REDUCER, SO WE NEED TO INCORPORATE isLoading REDUCER INTO EVERY OTHER REDUCER. LET'S CHANGE HOW REDUCER'S STATE STRUCTURE.
+      // NOW IT'S TIME TO INCORPORATE isLoading REDUCER INSIDE OF todos REDUCER. BCS THIS WAY IS HOW EVERYTHING SHOULD NORMALLY DONE. 
+      // IN REAL APPLICATION, THERE HAVE TO BE MORE THAN 1 REDUCER SUCH AS todos, users, documents, videos, pictures, ETC. AND NORMALLY EVERY REDUCER THAT CONNECT TO SERVER NEEDS isLoading REDUCER, SO WE NEED TO INCORPORATE isLoading REDUCER INTO EVERY OTHER REDUCER. LET'S CHANGE HOW REDUCER'S STATE STRUCTURE.
 
       => reducers.js
 
@@ -1099,8 +1100,8 @@
           case CREATE_TODO: {
             const { todo } = payload;
             return {
-              ...state,
-              data: state.data.concat(todo)
+              ...state, // do not touch any other data, just focus to change data according desired action.
+              data: state.data.concat(todo) //restructure according new state structure/tree
             };
           }
           case REMOVE_TODO: {
@@ -1181,31 +1182,31 @@
       export const getTodosLoading = state => state.todos.isLoading; //replace state.isLoading with state.todos.isLoading bcs our reducer initial state has been changed.
       export const getTodos = state => state.todos.data; //replace state.todas with state.todos.data bcs our reducer initial state has been changed.
 
- 45. Combining Selectors with Reselect<br>
- 46. More About Selectors<br>
- 47. Adding Selectors to Components<br>
+ ✓ 45. Combining Selectors with Reselect<br>
+ ✓ 46. More About Selectors<br>
+ ✓ 47. Adding Selectors to Components<br>
 
 ### 6. STYLED-COMPONENTS
- 48. Why Do You Need Styled-Components?<br>
- 49. Creating a Styled-Component<br>
- 50. Converting CSS Modules to Style-components<br>
- 51. Passing Props to Styled-Components<br>
- 52. Extending Styled-Components<br>
+ ✓ 48. Why Do You Need Styled-Components?<br>
+ ✓ 49. Creating a Styled-Component<br>
+ ✓ 50. Converting CSS Modules to Style-components<br>
+ ✓ 51. Passing Props to Styled-Components<br>
+ ✓ 52. Extending Styled-Components<br>
 
 ### 7. TESTING
- 53. Testing React Ecosystems
+ ✓ 53. Testing React Ecosystems
 
       define our desired logic into expected unit test, then connect it into our actual file using actual function inside testing file. add any fakeTodos or fake data, didn't affect test result.
 
       unit testing provide simpler standarization. 
 
- 54. Testing Reducers<br>
- 55. Testing Redux Thunks<br>
- 56. Testing Selectors<br>
- 57. Testing Styled-Components<br>
+ ✓ 54. Testing Reducers<br>
+ ✓ 55. Testing Redux Thunks<br>
+ ✓ 56. Testing Selectors<br>
+ ✓ 57. Testing Styled-Components<br>
 
 ### CONCLUSION
- 58. Next Steps<br>
+ ✓ 58. Next Steps
 
 
 # Think-tank
