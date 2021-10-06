@@ -1182,14 +1182,104 @@
       export const getTodosLoading = state => state.todos.isLoading; //replace state.isLoading with state.todos.isLoading bcs our reducer initial state has been changed.
       export const getTodos = state => state.todos.data; //replace state.todas with state.todos.data bcs our reducer initial state has been changed.
 
- ✓ 45. Combining Selectors with Reselect<br>
- ✓ 46. More About Selectors<br>
- ✓ 47. Adding Selectors to Components<br>
+ ✓ 45. Combining Selectors with Reselect
+ 
+        =>npm i reselect
+
+        ////////////////////////////////////////////////////
+        => selectors.js
+        import { createSelector } from "reselect";
+
+
+
+        // higher-order function with desired logic.
+        export const getIncompleteTodos = createSelector(
+            getTodos,
+            todos => todos.filter(todo => !todo.isCompleted)
+        );
+
+        export const getCompletedTodos = createSelector(
+          getTodos,
+          todos => todos.filter(todo => todo.isCompleted)
+        );
+
+
+        ///////////////////////////////////////////////////
+        => TodoList.js
+        import { getIncompleteTodos, getCompletedTodos, getTodosLoading } from "./selectors"; //replace getTodos with getIncompleteTodos and getCompletedTodos functions.
+
+        //adjust this function's props.
+        const mapStateToProps = (state) => ({
+          //- todos: getTodos(state),//replace with selectors lower-order function
+
+          // replace todos props with getIncompleteTodos and getCompletedTodos from selector.
+          inCompleteTodos: getIncompleteTodos(state),
+          completedTodos: getCompletedTodos(state)
+        });
+
+        //pass its props to TodoList component as replacement for getTodos props. 
+        //create jsx and styled-component grouping for incompleteTodos and completedTodos.
+        //custom styling for each group.
+        //defined data props for Incomplete and Completed using completedTodos/incompleteTodos.length.
+        //pass those data props to Incomplete styled-components and defined its logic.
+        //and Completed style is inherit Incomplete styled-components as props.
+        
+        
+        const Incomplete = styled.h2`
+          color: hsl(360, 100%, 50%);
+          margin-top: 3rem;
+          margin-left: 1.5rem;
+          display: ${props => (props.data < 1
+            ? 'none'
+            : null)}; //dunno wether this syntax is efficient or not.
+        `;
+
+        const Completed = styled(Incomplete)`
+          color: hsl(120, 100%, 50%);
+        `;
+
+
+        const TodoList = ({
+          inCompleteTodos, //getTodos replacement from mapStateToProps' props
+          completedTodos, //getTodos replacement from mapStateToProps' props
+        }) => {
+
+          const content = (
+            <ListWrapper>
+              <NewTodoForm />
+
+              {/* separate incomplete and completed todos */}
+              {/* define data props so we can pass it to styled-components */}
+              <Incomplete data={inCompleteTodos.length}>Incomplete:</Incomplete>
+              {inCompleteTodos.map((todo) => ...)}
+
+              {/* separate incomplete and completed todos */}
+              {/* define data props so we can pass it to styled-components */}
+              <Completed data={completedTodos.length}>Completed:</Completed>
+              {completedTodos.map((todo) => ...)}
+            </ListWrapper>
+          );
+
+
+
+ ✓ 46. More About Selectors
+ 
+        nicely done.
+
+ ✓ 47. Adding Selectors to Components
+ 
+        nicely done.
 
 ### 6. STYLED-COMPONENTS
  ✓ 48. Why Do You Need Styled-Components?<br>
- ✓ 49. Creating a Styled-Component<br>
- ✓ 50. Converting CSS Modules to Style-components<br>
+ ✓ 49. Creating a Styled-Component
+ 
+        nicely done.
+
+ ✓ 50. Converting CSS Modules to Style-components
+ 
+        nicely done.
+
  ✓ 51. Passing Props to Styled-Components<br>
  ✓ 52. Extending Styled-Components<br>
 
