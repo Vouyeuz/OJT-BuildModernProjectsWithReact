@@ -3,10 +3,9 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import NewTodoForm from "./NewTodoForm";
 import TodoListItem from "./TodoListItem";
-// for dispatch purpose
-import { loadTodos, removeTodoRequest, markTodoAsCompletedRequest } from "./thunks";
-// no longer needed
-// import { removeTodo, markTodoAsCompleted } from "./actions";
+import { loadTodos, removeTodoRequest, markTodoAsCompletedRequest } from "./thunks"; // for dispatch purpose
+import { getTodos, getTodosLoading } from "./selectors"; //mapStateToProps' properties' value replacement.
+// import { removeTodo, markTodoAsCompleted } from "./actions"; // no longer needed
 
 const ListWrapper = styled.div`
   max-width: 700px;
@@ -62,8 +61,8 @@ const TodoList = ({
 
 const mapStateToProps = (state) => ({
   // add access to isLoading props inside redux-store
-  isLoading: state.isLoading,
-  todos: state.todos,
+  isLoading: getTodosLoading(state), //replace with selectors lower-order function
+  todos: getTodos(state),//replace with selectors lower-order function
 });
 
 const mapDispatchToProps = (dispatch) => ({

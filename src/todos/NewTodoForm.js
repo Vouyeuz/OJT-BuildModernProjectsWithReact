@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 // import { createTodo } from "./actions";
 // no longer need createTodo from action, replace it with addTodoRequest from thunks. bcs createTodo function from action already used inside addTodoRequest function.
 import { addTodoRequest } from "./thunks";
+import { getTodos } from "./selectors"; //replacement for mapStateToProps' property's value.
 
 const FormContainer = styled.div`
   border-radius: 8px;
@@ -75,7 +76,8 @@ const NewTodoForm = ({ todos, onCreatePressed }) => {
 //state argument contain every state of the application.
 //in this case NewTodoForm.js need access to todos reducers inside our redux-store.
 const mapStateToProps = (state) => ({
-  todos: state.todos, //passing this todos property into this component props up above.
+  //- todos: state.todos, //passing this todos property into this component props up above.
+  todos: getTodos(state) //replace with selector lower-order function.
 });
 
 //trigger change inside redux-store using this dispatch argument.
