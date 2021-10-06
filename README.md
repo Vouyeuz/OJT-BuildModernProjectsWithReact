@@ -53,11 +53,11 @@
       
       ReactDOM.render(<App />, document.getElementById('root'));
       
-      
-      App.js
+      /////////////////////////////////////////////////////
+      => App.js
       snippet: rafce
       import React from 'react';
-
+      
       const App = () => {
         return (
           <div>
@@ -108,7 +108,7 @@
 
 ✓ 13. Hot-reloading with React-hot-Loader
 
-      App.js
+      => App.js
       import { hot } from 'react-hot-reloader';
       
       ...
@@ -276,9 +276,35 @@
 
 ✓ 18. Putting the App Together
 
-      TodoList.js
+      => TodoList.js
       import NewTodoForm from "./NewTodoForm";
       import TodoListItem from "./TodoListItem";
+
+      /////////////////////////////////////////////////////
+      => App.js
+      import React from "react";
+      import { hot } from "react-hot-loader";
+      import styled from "styled-components";
+      import TodoList from "./todos/TodoList";
+
+      const AppContainer = styled.div`
+          margin: 1rem;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #222222;
+          width: 100vw;
+          height: 100vh;
+      `;
+
+      const App = () => {
+        return (
+          <AppContainer>
+            <TodoList />
+          </AppContainer>
+        );
+      };
+
+      export default hot(module)(App);
+
         
 
  
@@ -305,7 +331,9 @@
 
 ✓ 21. Adding Redux to a React App
 
-      => npm i redux react-redux (no need);
+      => npm i redux react-redux (no need in this project);
+
+      ////////////////////////////////////////////////////////
       => store.js
          import {createStore, combineReducers} from 'redux';
          
@@ -490,6 +518,7 @@
       // export default connect(null, mapDispatchToProps)(TodoList);
       
       
+      ////////////////////////////////////////////////////////////////
       => TodoListItem.js
       //logic that defined inside TodoList.js, applied here through actions
 
@@ -529,8 +558,9 @@
               wrap <App /> using <PersistGate> inside index.js.
         b. PermaCrash debugging: 
               F12 => Application => LocalStorage => clear persist:root.
-              
-       => store.js
+
+        //////////////////////////////////////////////////////////////    
+        => store.js
         import { persistReducer } from "redux-persist";
         import storage from "redux-persist/lib/storage";
         import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
@@ -549,7 +579,8 @@
         export const configureStore = () =>
           createStore(persistedReducer);
           
-          
+
+        ///////////////////////////////////////////////////////////////
         => index.js
         import { persistStore } from "redux-persist";
         import { PersistGate } from "redux-persist/lib/integration/react";
@@ -620,9 +651,12 @@
       => npm i redux-thunk redux-devtools-extension @babel/runtime
       => npm i --save-dev @babel/plugin-transform-runtime
 
+      ///////////////////////////////////////////////////////////////
       => .babelrc
       "plugins": ["@babel/plugin-transform-runtime"]
 
+
+      ///////////////////////////////////////////////////////////////
       => store.js
       import { ..., ..., applyMiddleware } from "redux";
       import thunk from "redux-thunk";
@@ -642,6 +676,8 @@
 
       => defined actions for our application, and hook it up to the server using thunks
 
+
+      ///////////////////////////////////////////////////////////////
       => actions.js
       export const LOAD_TODO_IN_PROGRESS = "LOAD_TODO_IN_PROGRESS";
       export const loadTodoInProgress = () => ({
@@ -660,6 +696,7 @@
       });
 
 
+      ///////////////////////////////////////////////////////////////
       => thunks.js
       import {
         loadTodoInProgress,
@@ -726,7 +763,7 @@
       };
       //export isLoading reducer to store.js 
 
-
+      ///////////////////////////////////////////////////////////////
       => store.js
       import { todos, isLoading } from "./todos/reducers";
 
@@ -736,6 +773,7 @@
       };
 
 
+      /////////////////////////////////////////////////////////
       => TodoList.js
       import React, { useEffect } from "react";
       // for dispatch purpose
@@ -881,6 +919,8 @@
 
       //next is change our actions.js, reducers.js data structure, and NewFormTodo.js, and TodoList.js, and TodoListItem.js to match with our flow to communicate with the server.
 
+
+      ////////////////////////////////////////////////////////////////
       => actions.js
       // change text into todo, bcs our processing flow no longer local to our application, but through server.
       export const CREATE_TODO = "CREATE_TODO";
@@ -901,7 +941,7 @@
         payload: { todo },
       });
 
-
+      //////////////////////////////////////////////////////////
       => reducers.js
       export const todos = (state = [], action) => {
       const { type, payload } = action;
@@ -931,6 +971,7 @@
         }
       };
 
+      ////////////////////////////////////////////////////////////
       => NewTodoForm.js
       // define logic for dispatch function
       // import { createTodo } from "./actions";
@@ -943,7 +984,7 @@
         onCreatePressed: (text) => dispatch(addTodoRequest(text)),
       });
 
-
+      /////////////////////////////////////////////////////////////
       => TodoList.js
       // for dispatch purpose
       import { loadTodos, removeTodoRequest, markTodoAsCompletedRequest } from "./thunks";
@@ -962,6 +1003,7 @@
         onCompletedPressed: (id) => dispatch(markTodoAsCompletedRequest(id)),
       });
 
+      //////////////////////////////////////////////////////////
       => TodoListItem.js
       <TodoItemContainer>
         <h3>{todo.text}</h3>
@@ -988,24 +1030,157 @@
 
       Gratz!!! Works properly.
 
-✓ 40. Using Thunks to Delete Server Resources<br>
+✓ 40. Using Thunks to Delete Server Resources
+
+      nicely done.
+
 ✓ 41. Challenge: Using Thunks to Update Server Resou...<br>
-✓ 42. Solution: Using Thunks to Update Server Resour...<br>
+✓ 42. Solution: Using Thunks to Update Server Resour...
+
+      nicely done.
  
 ### 5. SELECTORS
  43. Why Do You Need Selectors?<br>
 
-      Our children components no need to know how state data are formated in which structure inside our redux-store. And children components no need to contain any logic to change state data format inside of redux-store.
+      Our children components no need to know how state data are formated in which structure inside our redux-store. And children components' mapStateToProps's properties no need to contain any logic to change state data format inside of redux-store such as filtering, combining, or any other transformation. Just need to call higher-order function that already defined inside selectors.js file, ie. getIncompleteTodos and getCompletedTodos pure functions.
 
-      Main purpose why selectors is necessary is for our components become independent regardless of our structure-data in our redux-store. Only need one selector component and its oneliner adjustment for all of our component to connect to our redux-store.
+      Main purpose why selectors is necessary is for our components become independent regardless of our structure-data in our redux-store. Only need one lower-order selector fuction with its props namely "state" to be passed everywhere and its oneliner adjustment for all of our components to connect to our redux-store when any change happens inside of it.
 
-      Highly recommended for huge application that require to changes its data structure either in reducers or redux-store when data getting bigger when scaling up.
+      Highly recommended for huge application that require to changes its data structure either in reducers or redux-store when data getting bigger and vary.
       ### Summary
-      Change in data-structure in reducers or store, means no adjustment needed for every children components, only need to adjust selectors component. So our components almost can be completely freed of any logic, thus its sole purpose is render component.
+      Change in data-structure, logic, transformation in reducers, means no adjustment needed for every children components, only need to adjust selectors' lower-order or higher-order functions. So our components almost can be completely freed of any data awareness and logic, thus its sole purpose is render component.
 
       In order to be completely free, styled-components needed.
 
- 44. Creating Selectors<br>
+ 44. Creating Selectors
+ 
+      => selectors.js
+      // these are lower-order function selectors. Their task's is solely to bridging between render components and redux-store. Any changes regarding state data or logic, no further adjustment inside mapStateToProps of our render components, just adjust these lower-order function selectors.
+      // export these functions with its "state" props, and import these functions out there somewhere.
+
+      export const getTodosLoading = state => state.isLoading;
+      export const getTodos = state => state.todos;
+
+      //then go to every render components to replace every mapStateToProps properties' value using these selector functions. 
+
+
+      /////////////////////////////////////////////////
+      => TodoList.js
+      import { getTodos, getTodosLoading } from "./selectors"; //mapStateToProps' properties' value replacement.
+
+      const mapStateToProps = (state) => ({
+        isLoading: getTodosLoading(state), //replace with selectors lower-order function
+        todos: getTodos(state),//replace with selectors lower-order function
+      });
+
+      //////////////////////////////////////////////////
+      => NewTodoForm.js
+      import { getTodos } from "./selectors"; //replacement for mapStateToProps' property's value.
+
+
+      const mapStateToProps = (state) => ({
+        todos: getTodos(state) //replace with selector lower-order function.
+      });
+
+      //////////////////////////////////////////////////////
+
+      NOW IT'S TIME TO INCORPORATE isLoading REDUCER INSIDE OF todos REDUCER. BCS THIS WAY IS HOW EVERYTHING SHOULD NORMALLY DONE. IN REAL APPLICATION, THERE HAVE TO BE MORE THAN 1 REDUCER SUCH AS todos, users, documents, videos, pictures, ETC. AND NORMALLY EVERY REDUCER THAT CONNECT TO SERVER NEEDS isLoading REDUCER, SO WE NEED TO INCORPORATE isLoading REDUCER INTO EVERY OTHER REDUCER. LET'S CHANGE HOW REDUCER'S STATE STRUCTURE.
+
+      => reducers.js
+
+      //! beginning incorporate isLoading reducer into todos reducer.
+      // create initial state for todos reducer.
+      const initialState = {isLoading: false, data: []};
+
+      export const todos = (state = initialState, action) => {
+        const { type, payload } = action;
+
+        switch (type) {
+          case CREATE_TODO: {
+            const { todo } = payload;
+            return {
+              ...state,
+              data: state.data.concat(todo)
+            };
+          }
+          case REMOVE_TODO: {
+            const { todo: removedTodo } = payload;
+            return {
+              ...state,
+              data: state.data.filter((todo) => todo.id !== removedTodo.id)
+            };
+          }
+          case MARK_TODO_AS_COMPLETED: {
+            const { todo: updatedTodo } = payload;
+            return {
+              ...state,
+              data: state.data.map((todo) => {
+                if (todo.id === updatedTodo.id) {
+                  return updatedTodo;
+        
+                }
+                return todo;
+              })
+            };
+          }
+          case LOAD_TODOS_SUCCESS: {
+            const { todos } = payload;
+            return {
+              ...state,
+              isLoading: false,
+              data: todos
+            };
+          }
+          case LOAD_TODOS_IN_PROGRESS: {
+            return {
+              ...state,
+              isLoading: true
+            };
+          }
+          case LOAD_TODOS_FAILURE: {
+            return {
+              ...state,
+              isLoading: false
+            }
+          }
+          default:
+            return state;
+        }
+      };
+
+
+      // !IT'S TIME TO DELETE THIS ISLOADING REDUCER, ALREADY INCORPORATE INSIDE TODOS REDUCER, BYE BYE.
+      /*
+      export const isLoading = (state = false, action) => {
+        const { type } = action;
+
+        switch (type) {
+          case LOAD_TODOS_IN_PROGRESS:
+            return true;
+          case LOAD_TODOS_SUCCESS:
+          case LOAD_TODOS_FAILURE:
+            return false;
+          default:
+            return state;
+        }
+      };
+      */
+
+
+      ///////////////////////////////////////////////////////
+      => store.js
+      import { todos } from "./todos/reducers"; //remove isLoading reducer
+
+      const reducers = {
+        todos //remove isLoading reducer
+      };
+
+
+      ///////////////////////////////////////////////////////
+      => selectors.js
+      export const getTodosLoading = state => state.todos.isLoading; //replace state.isLoading with state.todos.isLoading bcs our reducer initial state has been changed.
+      export const getTodos = state => state.todos.data; //replace state.todas with state.todos.data bcs our reducer initial state has been changed.
+
  45. Combining Selectors with Reselect<br>
  46. More About Selectors<br>
  47. Adding Selectors to Components<br>
