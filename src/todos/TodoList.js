@@ -46,7 +46,7 @@ const TodoList = ({
 
   const loadingMessage = 
     <LoadingText>
-      Loading todos...Please wait, or rather, turn on your server!
+      Server down, please turn on your server!
     </LoadingText>
   ;
 
