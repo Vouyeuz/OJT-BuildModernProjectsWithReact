@@ -342,10 +342,10 @@
          const rootReducer = combineReducer(reducers);
          
          export const configureStore = createStore(rootReducer);
-         //then export this configureStore into App.js
+         //then export this configureStore into index.js
          
          /////////////////////////////////////////////////////
-      => App.js
+      => index.js
          import { Provider } from 'react-redux';
          import { configureStore } from './store';
          
@@ -679,29 +679,29 @@
 
       ///////////////////////////////////////////////////////////////
       => actions.js
-      export const LOAD_TODO_IN_PROGRESS = "LOAD_TODO_IN_PROGRESS";
-      export const loadTodoInProgress = () => ({
-        type: LOAD_TODO_IN_PROGRESS,
+      export const LOAD_TODOS_IN_PROGRESS = "LOAD_TODOS_IN_PROGRESS";
+      export const loadTodosInProgress = () => ({
+        type: LOAD_TODOS_IN_PROGRESS,
       });
 
-      export const LOAD_TODO_SUCCESS = "LOAD_TODO_SUCCESS";
-      export const loadTodoSuccess = todos => ({
-        type: LOAD_TODO_SUCCESS,
+      export const LOAD_TODOS_SUCCESS = "LOAD_TODOS_SUCCESS";
+      export const loadTodosSuccess = todos => ({
+        type: LOAD_TODOS_SUCCESS,
         payload: { todos }
       });
 
-      export const LOAD_TODO_IN_FAILURE = "LOAD_TODO_IN_FAILURE";
-      export const loadTodoFailure = () => ({
-        type: LOAD_TODO_IN_FAILURE,
+      export const LOAD_TODOS_IN_FAILURE = "LOAD_TODOS_IN_FAILURE";
+      export const loadTodosFailure = () => ({
+        type: LOAD_TODOS_IN_FAILURE,
       });
 
 
       ///////////////////////////////////////////////////////////////
       => thunks.js
       import {
-        loadTodoInProgress,
-        loadTodoSuccess,
-        loadTodoFailure
+        loadTodosInProgress,
+        loadTodosSuccess,
+        loadTodosFailure
       } from "./actions";
 
       // contains 2 arguments: dispatch and getState
@@ -710,15 +710,15 @@
       export const loadTodos = () => async (dispatch, getState) => {
         //   try catch to handle in case our request failed
         try {
-          dispatch(loadTodoInProgress());
+          dispatch(loadTodosInProgress());
           const response = await fetch("http://localhost:8080/todos");
-          const todos = response.json();
+          const todos = await response.json();
 
           // after we got response from server in form of todos, dispatch it inside our loadTodosSuccess that will pass somewhere that need to process this data, ie. reducers.js
-          dispatch(loadTodoSuccess(todos));
+          dispatch(loadTodosSuccess(todos));
         } catch (e) {
           // if request failed means that this proccess will be handled by loadTodosFailure that return nothing from server, just whatever already exist inside initial todos
-          dispatch(loadTodoFailure());
+          dispatch(loadTodosFailure());
           dispatch(displayAlert(e));
         }
       };
@@ -734,9 +734,9 @@
 
       => reducers.js
       import {
-        LOAD_TODO_IN_PROGRESS,
-        LOAD_TODO_SUCCESS,
-        LOAD_TODO_IN_FAILURE
+        LOAD_TODOS_IN_PROGRESS,
+        LOAD_TODOS_SUCCESS,
+        LOAD_TODOS_IN_FAILURE
       } from "./actions";
 
       // temporarily create new reducer isLoading to handle thunk actions that is regarding loading-proccess-only when requesting data from server.
@@ -749,12 +749,12 @@
         const { type } = action;
 
         switch (type) {
-          case LOAD_TODO_IN_PROGRESS:
+          case LOAD_TODOS_IN_PROGRESS:
             // activated loading action when requesting data from server
             return true;
             // no matter what promise we got, that means we no longer load anything, so turn this loading action off.
-          case LOAD_TODO_SUCCESS:
-          case LOAD_TODO_IN_FAILURE:
+          case LOAD_TODOS_SUCCESS:
+          case LOAD_TODOS_IN_FAILURE:
             return false;
           default:
             // do nothing
@@ -896,8 +896,8 @@
           const response = await fetch(`http://localhost:8080/todos/${id}`, {
             method: 'delete'
           });
-          const todo = response.json();
-          dispatch(removeTodo(todo));
+          const removedTodo = await response.json();
+          dispatch(removeTodo(removedTodo));
         } catch (e) {
           dispatch(displayAlert(e));
         }
@@ -910,8 +910,8 @@
           const response = await fetch(`http://localhost:8080/todos/${id}`, {
             method: 'post'
           })
-          const todo = response.json();
-          dispatch(markTodoAsCompleted(todo));
+          const updatedTodo = await response.json();
+          dispatch(markTodoAsCompleted(updatedTodo));
         } catch (e) {
           dispatch(displayAlert(e));
         }
