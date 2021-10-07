@@ -6,7 +6,8 @@ import TodoList from "./todos/TodoList";
 const AppContainer = styled.div`
     font-family = Arial, Helvetica, sans-serif;
     margin: 2rem;
-    color: hsl(360, 90%, 50%);
+    color: hsl(360, 90%, 25%);
+    font-size: 1.5rem;
 `;
 
 const App = () => {
