@@ -1,5 +1,0 @@
-{
-    "presets": ["@babel/preset-env", "@babel/preset-react"],
-    // async runtime for thunk 
-    "plugins": ["@babel/plugin-transform-runtime"]
-}
