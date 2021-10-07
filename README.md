@@ -53,11 +53,11 @@
       
       ReactDOM.render(<App />, document.getElementById('root'));
       
-      
-      App.js
+      /////////////////////////////////////////////////////
+      => App.js
       snippet: rafce
       import React from 'react';
-
+      
       const App = () => {
         return (
           <div>
@@ -108,7 +108,7 @@
 
 ✓ 13. Hot-reloading with React-hot-Loader
 
-      App.js
+      => App.js
       import { hot } from 'react-hot-reloader';
       
       ...
@@ -276,9 +276,35 @@
 
 ✓ 18. Putting the App Together
 
-      TodoList.js
+      => TodoList.js
       import NewTodoForm from "./NewTodoForm";
       import TodoListItem from "./TodoListItem";
+
+      /////////////////////////////////////////////////////
+      => App.js
+      import React from "react";
+      import { hot } from "react-hot-loader";
+      import styled from "styled-components";
+      import TodoList from "./todos/TodoList";
+
+      const AppContainer = styled.div`
+          margin: 1rem;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #222222;
+          width: 100vw;
+          height: 100vh;
+      `;
+
+      const App = () => {
+        return (
+          <AppContainer>
+            <TodoList />
+          </AppContainer>
+        );
+      };
+
+      export default hot(module)(App);
+
         
 
  
@@ -305,7 +331,9 @@
 
 ✓ 21. Adding Redux to a React App
 
-      => npm i redux react-redux (no need);
+      => npm i redux react-redux (no need in this project);
+
+      ////////////////////////////////////////////////////////
       => store.js
          import {createStore, combineReducers} from 'redux';
          
@@ -314,10 +342,10 @@
          const rootReducer = combineReducer(reducers);
          
          export const configureStore = createStore(rootReducer);
-         //then export this configureStore into App.js
+         //then export this configureStore into index.js
          
          /////////////////////////////////////////////////////
-      => App.js
+      => index.js
          import { Provider } from 'react-redux';
          import { configureStore } from './store';
          
@@ -490,6 +518,7 @@
       // export default connect(null, mapDispatchToProps)(TodoList);
       
       
+      ////////////////////////////////////////////////////////////////
       => TodoListItem.js
       //logic that defined inside TodoList.js, applied here through actions
 
@@ -529,8 +558,9 @@
               wrap <App /> using <PersistGate> inside index.js.
         b. PermaCrash debugging: 
               F12 => Application => LocalStorage => clear persist:root.
-              
-       => store.js
+
+        //////////////////////////////////////////////////////////////    
+        => store.js
         import { persistReducer } from "redux-persist";
         import storage from "redux-persist/lib/storage";
         import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
@@ -549,7 +579,8 @@
         export const configureStore = () =>
           createStore(persistedReducer);
           
-          
+
+        ///////////////////////////////////////////////////////////////
         => index.js
         import { persistStore } from "redux-persist";
         import { PersistGate } from "redux-persist/lib/integration/react";
@@ -620,9 +651,12 @@
       => npm i redux-thunk redux-devtools-extension @babel/runtime
       => npm i --save-dev @babel/plugin-transform-runtime
 
+      ///////////////////////////////////////////////////////////////
       => .babelrc
       "plugins": ["@babel/plugin-transform-runtime"]
 
+
+      ///////////////////////////////////////////////////////////////
       => store.js
       import { ..., ..., applyMiddleware } from "redux";
       import thunk from "redux-thunk";
@@ -642,46 +676,51 @@
 
       => defined actions for our application, and hook it up to the server using thunks
 
+
+      ///////////////////////////////////////////////////////////////
       => actions.js
-      export const LOAD_TODO_IN_PROGRESS = "LOAD_TODO_IN_PROGRESS";
-      export const loadTodoInProgress = () => ({
-        type: LOAD_TODO_IN_PROGRESS,
+      export const LOAD_TODOS_IN_PROGRESS = "LOAD_TODOS_IN_PROGRESS";
+      export const loadTodosInProgress = () => ({
+        type: LOAD_TODOS_IN_PROGRESS,
       });
 
-      export const LOAD_TODO_SUCCESS = "LOAD_TODO_SUCCESS";
-      export const loadTodoSuccess = todos => ({
-        type: LOAD_TODO_SUCCESS,
+      export const LOAD_TODOS_SUCCESS = "LOAD_TODOS_SUCCESS";
+      export const loadTodosSuccess = todos => ({
+        type: LOAD_TODOS_SUCCESS,
         payload: { todos }
       });
 
-      export const LOAD_TODO_IN_FAILURE = "LOAD_TODO_IN_FAILURE";
-      export const loadTodoFailure = () => ({
-        type: LOAD_TODO_IN_FAILURE,
+      export const LOAD_TODOS_IN_FAILURE = "LOAD_TODOS_IN_FAILURE";
+      export const loadTodosFailure = () => ({
+        type: LOAD_TODOS_IN_FAILURE,
       });
 
 
+      ///////////////////////////////////////////////////////////////
       => thunks.js
       import {
-        loadTodoInProgress,
-        loadTodoSuccess,
-        loadTodoFailure
+        loadTodosInProgress,
+        loadTodosSuccess,
+        loadTodosFailure
       } from "./actions";
 
       // contains 2 arguments: dispatch and getState
       // dispatch to dispatch other redux actions through thunk
       // getState to get access to the current state of our redux-store
+      
+      // !get request - READ of CRUD
       export const loadTodos = () => async (dispatch, getState) => {
         //   try catch to handle in case our request failed
         try {
-          dispatch(loadTodoInProgress());
+          dispatch(loadTodosInProgress());
           const response = await fetch("http://localhost:8080/todos");
-          const todos = response.json();
+          const todos = await response.json();
 
           // after we got response from server in form of todos, dispatch it inside our loadTodosSuccess that will pass somewhere that need to process this data, ie. reducers.js
-          dispatch(loadTodoSuccess(todos));
+          dispatch(loadTodosSuccess(todos));
         } catch (e) {
           // if request failed means that this proccess will be handled by loadTodosFailure that return nothing from server, just whatever already exist inside initial todos
-          dispatch(loadTodoFailure());
+          dispatch(loadTodosFailure());
           dispatch(displayAlert(e));
         }
       };
@@ -697,26 +736,27 @@
 
       => reducers.js
       import {
-        LOAD_TODO_IN_PROGRESS,
-        LOAD_TODO_SUCCESS,
-        LOAD_TODO_IN_FAILURE
+        LOAD_TODOS_IN_PROGRESS,
+        LOAD_TODOS_SUCCESS,
+        LOAD_TODOS_IN_FAILURE
       } from "./actions";
 
       // temporarily create new reducer isLoading to handle thunk actions that is regarding loading-proccess-only when requesting data from server.
       // when it comes to what kind of result data after request, will be handled by todos reducer.
       // later on in this project, this isLoading reducer will be merge into todos reducer when selector component implemented.
 
+      
       export const isLoading = (state = false, action) => {
         // only destructure type property inside action arg, no payload needed
         const { type } = action;
 
         switch (type) {
-          case LOAD_TODO_IN_PROGRESS:
+          case LOAD_TODOS_IN_PROGRESS:
             // activated loading action when requesting data from server
             return true;
-            // no matter what promise we got, that means we no longer load anything, so turn this loading action off.
-          case LOAD_TODO_SUCCESS:
-          case LOAD_TODO_IN_FAILURE:
+            // no matter what promise we got, that means we no longer load anything, so turn this loading progress off.
+          case LOAD_TODOS_SUCCESS:
+          case LOAD_TODOS_IN_FAILURE:
             return false;
           default:
             // do nothing
@@ -725,7 +765,7 @@
       };
       //export isLoading reducer to store.js 
 
-
+      ///////////////////////////////////////////////////////////////
       => store.js
       import { todos, isLoading } from "./todos/reducers";
 
@@ -735,23 +775,18 @@
       };
 
 
+      /////////////////////////////////////////////////////////
       => TodoList.js
       import React, { useEffect } from "react";
       // for dispatch purpose
       import { loadTodos } from "./thunks";
 
       const LoadingMessage = styled.div`
-        font-size: 3rem;
-        color: green;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `;
-
-      const WarningMessage = styled(LoadingMessage)`
+        font-size: 2rem;
         color: red;
       `;
 
+      
 
       const TodoList = ({
         isLoading,
@@ -764,8 +799,7 @@
 
         const loadingMessage = (
           <LoadingMessage>
-            Loading todos...Please wait,
-            <WarningMessage> or rather, turn on your server!</WarningMessage>
+            Server down, please turn on your server!
           </LoadingMessage>
         );
 
@@ -776,7 +810,6 @@
               <TodoListItem
                 key={todo.text}
                 todo={todo}
-                //defined dispatch's props to be passed for TodoListItem component.
                 onRemovePressed={onRemovePressed}
                 onCompletedPressed={onCompletedPressed}
               />
@@ -791,6 +824,7 @@
       const mapStateToProps = (state) => ({
         // add access to isLoading props inside redux-store
         isLoading: state.isloading,
+        todos: state.todos
       });
 
       const mapDispatchToProps = (dispatch) => ({
@@ -800,51 +834,459 @@
 
 
 
-✓ 38. Refactoring the Todos Reducer<br>
-✓ 39. Using Thunks to Create Server Resources<br>
-✓ 40. Using Thunks to Delete Server Resources<br>
+✓ 38. Refactoring the Todos Reducer
+
+      =>reducers.js
+      //add these code inside switch statement of todos reducer
+
+      // LOAD_TODOS_SUCCESS need special treatment bcs when we define this thunk function inside actions.js its payload is from todos in the server, not set locally like others as text. But soon this case will be normalize bcs any other actions will also be changed, every actions communicate with todos in the server, not refers to local text anymore when CRUD todo.
+      case LOAD_TODOS_SUCCESS: {
+        const { todos } = payload;
+        return todos;
+      }
+      // for now, these two case have the same behaviour as default case that is just return state
+      case LOAD_TODOS_IN_PROGRESS:
+      case LOAD_TODOS_FAILURE:
+      default:
+        return state;
+
+✓ 39. Using Thunks to Create Server Resources
+
+      =>thunks.js
+      import {
+        createTodo,
+        removeTodo,
+        markTodoAsCompleted
+      } from "./actions";
+    
+
+      // inputValue-text as props and process using async dispatch function
+      // !post request - CREATE of CRUD
+      export const addTodoRequest = text => async dispatch => {
+        try {
+          // create body for response message, send this body to server, wrap it using this standard method of posting new data to server. transform into json file using JSON.stringify()
+          const body = JSON.stringify({text});
+          const response = await fetch('http://localhost:8080/todos', {
+            // common practice when create something using rest api
+            headers: {
+              'Content-type': 'application/json'
+            },
+            method: 'post',
+            body
+          });
+          // save response inside todo variable, either success or failed create new data
+          const todo = await response.json();
+          // dispatch this todo into reducers to be process. we will define what logic should be done to our redux-store regarding this thunk-action
+          dispatch(createTodo(todo));
+        } catch (e) {
+          dispatch(displayAlert(e));
+        }
+      };
+
+      // !delete request - DELETE of CRUD
+      export const removeTodoRequest = id => async dispatch => {
+        try {
+          // by server default, every single todo automatically has their own id, use their id as unique identifier.
+          const response = await fetch(`http://localhost:8080/todos/${id}`, {
+            method: 'delete'
+          });
+          const removedTodo = await response.json();
+          dispatch(removeTodo(removedTodo));
+        } catch (e) {
+          dispatch(displayAlert(e));
+        }
+      };
+
+      // !post request - UPDATE of CRUD
+      export const markTodoAsCompletedRequest = id => async dispatch => {
+        try {
+          // similar to create method using post, but bcs of its unique id, restful api already smart enough to know and differentiate what we want to update only this specific data inside database.
+          const response = await fetch(`http://localhost:8080/todos/${id}`, {
+            method: 'post'
+          })
+          const updatedTodo = await response.json();
+          dispatch(markTodoAsCompleted(updatedTodo));
+        } catch (e) {
+          dispatch(displayAlert(e));
+        }
+      };
+
+      //next is change our actions.js, reducers.js data structure, and NewFormTodo.js, and TodoList.js, and TodoListItem.js to match with our flow to communicate with the server.
+
+
+      ////////////////////////////////////////////////////////////////
+      => actions.js
+      // change text into todo, bcs our processing flow no longer local to our application, but through server.
+      export const CREATE_TODO = "CREATE_TODO";
+      export const createTodo = (todo) => ({
+        type: CREATE_TODO,
+        payload: { todo },
+      });
+
+      export const REMOVE_TODO = "REMOVE_TODO";
+      export const removeTodo = (todo) => ({
+        type: REMOVE_TODO,
+        payload: { todo },
+      });
+
+      export const MARK_TODO_AS_COMPLETED = "MARK_TODO_AS_COMPLETED";
+      export const markTodoAsCompleted = (todo) => ({
+        type: MARK_TODO_AS_COMPLETED,
+        payload: { todo },
+      });
+
+      //////////////////////////////////////////////////////////
+      => reducers.js
+      export const todos = (state = [], action) => {
+      const { type, payload } = action;
+
+      switch (type) {
+        case CREATE_TODO: {
+          // our payload already changes into todo, no longer text
+          // our server automatically define our data state structure, we just need no return it, no need newTodo for defining our data state structure. feels weird calling it data state structure...hmm
+          const { todo } = payload;
+          return state.concat(todo);
+        }
+        case REMOVE_TODO: {
+          const { todo: removedTodo } = payload;
+          return state.filter((todo) => todo.id !== removedTodo.id);
+        }
+        case MARK_TODO_AS_COMPLETED: {
+          const { todo: updatedTodo } = payload;
+          return state.map((todo) => {
+            if (todo.id === updatedTodo.id) {
+              // return { ...todo, isCompleted: true };
+              //? why replace it with just updatedTodo?
+              return updatedTodo;
+
+            }
+            return todo;
+          });
+        }
+      };
+
+      ////////////////////////////////////////////////////////////
+      => NewTodoForm.js
+      // define logic for dispatch function
+      // import { createTodo } from "./actions";
+      // no longer need createTodo from action, replace it with addTodoRequest from thunks. bcs createTodo function from action already used inside addTodoRequest function.
+      import { addTodoRequest } from "./thunks";
+
+
+      //replace createTodo with addTodoRequest.
+      const mapDispatchToProps = (dispatch) => ({
+        onCreatePressed: (text) => dispatch(addTodoRequest(text)),
+      });
+
+      /////////////////////////////////////////////////////////////
+      => TodoList.js
+      // for dispatch purpose
+      import { loadTodos, removeTodoRequest, markTodoAsCompletedRequest } from "./thunks";
+      // import { removeTodo, markTodoAsCompleted } from "./actions"; // no longer needed.
+
+
+      // replace todo.text with todo.id, even though not neccessary for this case, bcs todo.text already unique bcs no duplicate text
+        key={todo.id}
+
+      const mapDispatchToProps = (dispatch) => ({
+        // replace text argument with id.
+        // replace dispatched functions with thunk functions.
+        onRemovePressed: (id) => dispatch(removeTodoRequest(id)),
+        onCompletedPressed: (id) => dispatch(markTodoAsCompletedRequest(id)),
+      });
+
+      //////////////////////////////////////////////////////////
+      => TodoListItem.js
+      <TodoItemContainer>
+        <h3>{todo.text}</h3>
+        <ButtonsContainer>
+          {todo.isCompleted ? null : (
+              //replace todo.text with todo.id
+            <CompletedButton onClick={() => onCompletedPressed(todo.id)}>
+              Mark as Completed
+            </CompletedButton>
+          )}
+
+          <RemoveButton
+            onClick={() => {
+              //replace todo.text with todo.id
+              onRemovePressed(todo.id);
+            }}
+          >
+            Remove
+          </RemoveButton>
+        </ButtonsContainer>
+      </TodoItemContainer>
+
+      Gratz!!! Works properly.
+
+✓ 40. Using Thunks to Delete Server Resources
+
+      nicely done.
+
 ✓ 41. Challenge: Using Thunks to Update Server Resou...<br>
-✓ 42. Solution: Using Thunks to Update Server Resour...<br>
+✓ 42. Solution: Using Thunks to Update Server Resour...
+
+      nicely done.
  
 ### 5. SELECTORS
- 43. Why Do You Need Selectors?<br>
+ ✓ 43. Why Do You Need Selectors?<br>
 
-      Our children components no need to know how state data are formated in which structure inside our redux-store. And children components no need to contain any logic to change state data format inside of redux-store.
+      Our children components no need to know how state data are formated in which structure inside our redux-store. And children components' mapStateToProps's properties no need to contain any logic to change state data format inside of redux-store such as filtering, combining, or any other transformation. Just need to call higher-order function that already defined inside selectors.js file, ie. getIncompleteTodos and getCompletedTodos pure functions.
 
-      Main purpose why selectors is necessary is for our components become independent regardless of our structure-data in our redux-store. Only need one selector component and its oneliner adjustment for all of our component to connect to our redux-store.
+      Main purpose why selectors is necessary is for our components become independent regardless of our structure-data in our redux-store. Only need one lower-order selector fuction with its props namely "state" to be passed everywhere and its oneliner adjustment for all of our components to connect to our redux-store when any change happens inside of it.
 
-      Highly recommended for huge application that require to changes its data structure either in reducers or redux-store when data getting bigger when scaling up.
+      Highly recommended for huge application that require to changes its data structure either in reducers or redux-store when data getting bigger and vary.
       ### Summary
-      Change in data-structure in reducers or store, means no adjustment needed for every children components, only need to adjust selectors component. So our components almost can be completely freed of any logic, thus its sole purpose is render component.
+      Change in data-structure, logic, transformation in reducers, means no adjustment needed for every children components, only need to adjust selectors' lower-order or higher-order functions. So our components almost can be completely freed of any data awareness and logic, thus its sole purpose is render component.
 
       In order to be completely free, styled-components needed.
 
- 44. Creating Selectors<br>
- 45. Combining Selectors with Reselect<br>
- 46. More About Selectors<br>
- 47. Adding Selectors to Components<br>
+ ✓ 44. Creating Selectors
+ 
+      => selectors.js
+      // these are lower-order function selectors. Their task's is solely to bridging between render components and redux-store. Any changes regarding state data or logic, no further adjustment inside mapStateToProps of our render components, just adjust these lower-order function selectors.
+      // export these functions with its "state" props, and import these functions out there somewhere.
+
+      export const getTodosLoading = state => state.isLoading;
+      export const getTodos = state => state.todos;
+
+      //then go to every render components to replace every mapStateToProps properties' value using these selector functions. 
+
+
+      /////////////////////////////////////////////////
+      => TodoList.js
+      import { getTodos, getTodosLoading } from "./selectors"; //mapStateToProps' properties' value replacement.
+
+      const mapStateToProps = (state) => ({
+        isLoading: getTodosLoading(state), //replace with selectors lower-order function
+        todos: getTodos(state),//replace with selectors lower-order function
+      });
+
+
+      //////////////////////////////////////////////////
+      => NewTodoForm.js
+      import { getTodos } from "./selectors"; //replacement for mapStateToProps' property's value.
+
+
+      const mapStateToProps = (state) => ({
+        todos: getTodos(state) //replace with selector lower-order function.
+      });
+
+      //////////////////////////////////////////////////////
+      // NOW IT'S TIME TO INCORPORATE isLoading REDUCER INSIDE OF todos REDUCER. BCS THIS WAY IS HOW EVERYTHING SHOULD NORMALLY DONE. 
+      // IN REAL APPLICATION, THERE HAVE TO BE MORE THAN 1 REDUCER SUCH AS todos, users, documents, videos, pictures, ETC. AND NORMALLY EVERY REDUCER THAT CONNECT TO SERVER NEEDS isLoading REDUCER, SO WE NEED TO INCORPORATE isLoading REDUCER INTO EVERY OTHER REDUCER. LET'S CHANGE HOW REDUCER'S STATE STRUCTURE.
+
+      => reducers.js
+
+      //! beginning incorporate isLoading reducer into todos reducer.
+      // create initial state for todos reducer.
+      const initialState = {isLoading: false, data: []};
+
+      export const todos = (state = initialState, action) => {
+        const { type, payload } = action;
+
+        switch (type) {
+          case CREATE_TODO: {
+            const { todo } = payload;
+            return {
+              ...state, // do not touch any other data, just focus to change data according desired action.
+              data: state.data.concat(todo) //restructure according new state structure/tree
+            };
+          }
+          case REMOVE_TODO: {
+            const { todo: removedTodo } = payload;
+            return {
+              ...state,
+              data: state.data.filter((todo) => todo.id !== removedTodo.id)
+            };
+          }
+          case MARK_TODO_AS_COMPLETED: {
+            const { todo: updatedTodo } = payload;
+            return {
+              ...state,
+              data: state.data.map((todo) => {
+                if (todo.id === updatedTodo.id) {
+                  return updatedTodo;
+        
+                }
+                return todo;
+              })
+            };
+          }
+          case LOAD_TODOS_SUCCESS: {
+            const { todos } = payload;
+            return {
+              ...state,
+              isLoading: false,
+              data: todos
+            };
+          }
+          case LOAD_TODOS_IN_PROGRESS: {
+            return {
+              ...state,
+              isLoading: true
+            };
+          }
+          case LOAD_TODOS_FAILURE: {
+            return {
+              ...state,
+              isLoading: false
+            }
+          }
+          default:
+            return state;
+        }
+      };
+
+
+      // !IT'S TIME TO DELETE THIS ISLOADING REDUCER, ALREADY INCORPORATE INSIDE TODOS REDUCER, BYE BYE.
+      /*
+      export const isLoading = (state = false, action) => {
+        const { type } = action;
+
+        switch (type) {
+          case LOAD_TODOS_IN_PROGRESS:
+            return true;
+          case LOAD_TODOS_SUCCESS:
+          case LOAD_TODOS_FAILURE:
+            return false;
+          default:
+            return state;
+        }
+      };
+      */
+
+
+      ///////////////////////////////////////////////////////
+      => store.js
+      import { todos } from "./todos/reducers"; //remove isLoading reducer
+
+      const reducers = {
+        todos //remove isLoading reducer
+      };
+
+
+      ///////////////////////////////////////////////////////
+      => selectors.js
+      export const getTodosLoading = state => state.todos.isLoading; //replace state.isLoading with state.todos.isLoading bcs our reducer initial state has been changed.
+      export const getTodos = state => state.todos.data; //replace state.todas with state.todos.data bcs our reducer initial state has been changed.
+
+ ✓ 45. Combining Selectors with Reselect
+ 
+        =>npm i reselect
+
+        ////////////////////////////////////////////////////
+        => selectors.js
+        import { createSelector } from "reselect";
+
+
+
+        // higher-order function with desired logic.
+        export const getIncompleteTodos = createSelector(
+            getTodos,
+            todos => todos.filter(todo => !todo.isCompleted)
+        );
+
+        export const getCompletedTodos = createSelector(
+          getTodos,
+          todos => todos.filter(todo => todo.isCompleted)
+        );
+
+
+        ///////////////////////////////////////////////////
+        => TodoList.js
+        import { getIncompleteTodos, getCompletedTodos, getTodosLoading } from "./selectors"; //replace getTodos with getIncompleteTodos and getCompletedTodos functions.
+
+        //adjust this function's props.
+        const mapStateToProps = (state) => ({
+          //- todos: getTodos(state),//replace with selectors lower-order function
+
+          // replace todos props with getIncompleteTodos and getCompletedTodos from selector.
+          inCompleteTodos: getIncompleteTodos(state),
+          completedTodos: getCompletedTodos(state)
+        });
+
+        //pass its props to TodoList component as replacement for getTodos props. 
+        //create jsx and styled-component grouping for incompleteTodos and completedTodos.
+        //custom styling for each group.
+        //defined data props for Incomplete and Completed using completedTodos/incompleteTodos.length.
+        //pass those data props to Incomplete styled-components and defined its logic.
+        //and Completed style is inherit Incomplete styled-components as props.
+        
+        
+        const Incomplete = styled.h2`
+          color: hsl(360, 100%, 50%);
+          margin-top: 3rem;
+          margin-left: 1.5rem;
+          display: ${props => (props.data < 1
+            ? 'none'
+            : null)}; //dunno wether this syntax is efficient or not.
+        `;
+
+        const Completed = styled(Incomplete)`
+          color: hsl(120, 100%, 50%);
+        `;
+
+
+        const TodoList = ({
+          inCompleteTodos, //getTodos replacement from mapStateToProps' props
+          completedTodos, //getTodos replacement from mapStateToProps' props
+        }) => {
+
+          const content = (
+            <ListWrapper>
+              <NewTodoForm />
+
+              {/* separate incomplete and completed todos */}
+              {/* define data props so we can pass it to styled-components */}
+              <Incomplete data={inCompleteTodos.length}>Incomplete:</Incomplete>
+              {inCompleteTodos.map((todo) => ...)}
+
+              {/* separate incomplete and completed todos */}
+              {/* define data props so we can pass it to styled-components */}
+              <Completed data={completedTodos.length}>Completed:</Completed>
+              {completedTodos.map((todo) => ...)}
+            </ListWrapper>
+          );
+
+
+
+ ✓ 46. More About Selectors
+ 
+        nicely done.
+
+ ✓ 47. Adding Selectors to Components
+ 
+        nicely done.
 
 ### 6. STYLED-COMPONENTS
- 48. Why Do You Need Styled-Components?<br>
- 49. Creating a Styled-Component<br>
- 50. Converting CSS Modules to Style-components<br>
- 51. Passing Props to Styled-Components<br>
- 52. Extending Styled-Components<br>
+ ✓ 48. Why Do You Need Styled-Components?<br>
+ ✓ 49. Creating a Styled-Component
+ 
+        nicely done.
+
+ ✓ 50. Converting CSS Modules to Style-components
+ 
+        nicely done.
+
+ ✓ 51. Passing Props to Styled-Components<br>
+ ✓ 52. Extending Styled-Components<br>
 
 ### 7. TESTING
- 53. Testing React Ecosystems
+ ✓ 53. Testing React Ecosystems
 
       define our desired logic into expected unit test, then connect it into our actual file using actual function inside testing file. add any fakeTodos or fake data, didn't affect test result.
 
       unit testing provide simpler standarization. 
 
- 54. Testing Reducers<br>
- 55. Testing Redux Thunks<br>
- 56. Testing Selectors<br>
- 57. Testing Styled-Components<br>
+ ✓ 54. Testing Reducers<br>
+ ✓ 55. Testing Redux Thunks<br>
+ ✓ 56. Testing Selectors<br>
+ ✓ 57. Testing Styled-Components<br>
 
 ### CONCLUSION
- 58. Next Steps<br>
+ ✓ 58. Next Steps
 
 
 # Think-tank
