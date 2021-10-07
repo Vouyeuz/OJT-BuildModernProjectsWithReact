@@ -707,6 +707,8 @@
       // contains 2 arguments: dispatch and getState
       // dispatch to dispatch other redux actions through thunk
       // getState to get access to the current state of our redux-store
+      
+      // !get request - READ of CRUD
       export const loadTodos = () => async (dispatch, getState) => {
         //   try catch to handle in case our request failed
         try {
@@ -743,7 +745,7 @@
       // when it comes to what kind of result data after request, will be handled by todos reducer.
       // later on in this project, this isLoading reducer will be merge into todos reducer when selector component implemented.
 
-      // !get request - READ of CRUD
+      
       export const isLoading = (state = false, action) => {
         // only destructure type property inside action arg, no payload needed
         const { type } = action;
@@ -752,7 +754,7 @@
           case LOAD_TODOS_IN_PROGRESS:
             // activated loading action when requesting data from server
             return true;
-            // no matter what promise we got, that means we no longer load anything, so turn this loading action off.
+            // no matter what promise we got, that means we no longer load anything, so turn this loading progress off.
           case LOAD_TODOS_SUCCESS:
           case LOAD_TODOS_IN_FAILURE:
             return false;
@@ -780,17 +782,11 @@
       import { loadTodos } from "./thunks";
 
       const LoadingMessage = styled.div`
-        font-size: 3rem;
-        color: green;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `;
-
-      const WarningMessage = styled(LoadingMessage)`
+        font-size: 2rem;
         color: red;
       `;
 
+      
 
       const TodoList = ({
         isLoading,
@@ -803,8 +799,7 @@
 
         const loadingMessage = (
           <LoadingMessage>
-            Loading todos...Please wait,
-            <WarningMessage> or rather, turn on your server!</WarningMessage>
+            Server down, please turn on your server!
           </LoadingMessage>
         );
 
@@ -815,7 +810,6 @@
               <TodoListItem
                 key={todo.text}
                 todo={todo}
-                //defined dispatch's props to be passed for TodoListItem component.
                 onRemovePressed={onRemovePressed}
                 onCompletedPressed={onCompletedPressed}
               />
@@ -988,17 +982,15 @@
       => TodoList.js
       // for dispatch purpose
       import { loadTodos, removeTodoRequest, markTodoAsCompletedRequest } from "./thunks";
-      // no longer needed
-      // import { removeTodo, markTodoAsCompleted } from "./actions";
+      // import { removeTodo, markTodoAsCompleted } from "./actions"; // no longer needed.
 
 
       // replace todo.text with todo.id, even though not neccessary for this case, bcs todo.text already unique bcs no duplicate text
         key={todo.id}
 
       const mapDispatchToProps = (dispatch) => ({
-        // dispatch startLoadingTodos only when first time load application or when new request made?
-        startLoadingTodos: () => dispatch(loadTodos()),
-        // replace text argument with id
+        // replace text argument with id.
+        // replace dispatched functions with thunk functions.
         onRemovePressed: (id) => dispatch(removeTodoRequest(id)),
         onCompletedPressed: (id) => dispatch(markTodoAsCompletedRequest(id)),
       });
@@ -1009,7 +1001,6 @@
         <h3>{todo.text}</h3>
         <ButtonsContainer>
           {todo.isCompleted ? null : (
-              //dispatch function applied here
               //replace todo.text with todo.id
             <CompletedButton onClick={() => onCompletedPressed(todo.id)}>
               Mark as Completed
@@ -1017,7 +1008,6 @@
           )}
 
           <RemoveButton
-            //dispatch function applied here
             onClick={() => {
               //replace todo.text with todo.id
               onRemovePressed(todo.id);
