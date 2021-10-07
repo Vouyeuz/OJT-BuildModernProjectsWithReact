@@ -81,5 +81,5 @@ export const markTodoAsCompletedRequest = id => async dispatch => {
 };
 
 export const displayAlert = (text) => () => {
-  alert(text);
+  alert(`Dear user, warning: ${text}`);
 };
